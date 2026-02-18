@@ -1,0 +1,454 @@
+.app-header {
+  padding: 16px 14px 14px;
+  background: transparent;
+}
+
+.app-header-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.app-header-content::after {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: var(--border-subtle);
+  margin-top: 14px;
+}
+
+.app-title {
+  margin: 0;
+  font-size: 2.1rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-align: center;
+  color: var(--text-main);
+  font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  text-transform: uppercase;
+}
+
+.app-subtitle {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 0.82rem;
+  text-align: center;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 400;
+}
+
+.app-main {
+  flex: 1;
+  margin-top: 8px;
+  margin-bottom: 6px;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.swipe-pages {
+  display: flex;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.swipe-page {
+  flex: 0 0 100%;
+  width: 100%;
+  min-width: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  -webkit-overflow-scrolling: touch;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.page-title {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.page-description {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-soft);
+}
+
+.placeholder-card {
+  margin-top: 4px;
+  padding: 16px 14px;
+  font-size: 0.95rem;
+  color: var(--text-soft);
+}
+
+.bottom-nav {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+  padding: 4px;
+  position: sticky;
+  bottom: 0;
+  background: var(--bg-elevated);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.bottom-nav-item {
+  border-radius: var(--radius-pill);
+  border: none;
+  background: transparent;
+  padding: 8px 4px;
+  color: var(--text-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+}
+
+.bottom-nav-item--active {
+  background-color: var(--primary-soft);
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.bottom-nav-label {
+  white-space: nowrap;
+}
+
+.motivation-text {
+  margin: 8px 0 0;
+  padding: 0 8px;
+  font-size: 0.78rem;
+  color: var(--text-soft);
+  opacity: 0.85;
+  text-align: center;
+  font-family: 'Playfair Display', Georgia, serif;
+  line-height: 1.4;
+  max-width: 280px;
+}
+
+.chip-group {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+  overflow-x: auto;
+}
+
+.chip {
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-subtle);
+  background-color: var(--bg-elevated);
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  color: var(--text-soft);
+}
+
+.chip--active {
+  background-color: var(--primary);
+  color: #f5f0e8;
+  border-color: transparent;
+}
+
+.task-list {
+  margin-top: 10px;
+  padding: 10px 10px 6px;
+}
+
+.task-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.task-list-title {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.task-list-chip {
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background-color: var(--primary-soft);
+  color: var(--primary);
+}
+
+.task-list-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.task-list-empty {
+  margin: 4px 0 2px;
+  font-size: 0.85rem;
+  color: var(--text-soft);
+}
+
+.task-list-legend {
+  margin: 4px 0 2px;
+  font-size: 0.75rem;
+  color: var(--text-soft);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  display: inline-block;
+  margin: 0 2px;
+}
+
+.legend-dot--light {
+  background-color: #b2f2bb;
+}
+
+.legend-dot--medium {
+  background-color: #ffd43b;
+}
+
+.legend-dot--deep {
+  background-color: #ff8787;
+}
+
+.task-item-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.task-item {
+  flex: 1;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  background-color: var(--bg-elevated);
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+  color: var(--text-main);
+}
+
+.task-item--done {
+  opacity: 0.55;
+  text-decoration: line-through;
+}
+
+.task-item-checkbox {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  border: 2px solid var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  color: var(--bg-elevated);
+  background-color: transparent;
+}
+
+.task-item--done .task-item-checkbox {
+  background-color: var(--primary);
+}
+
+.task-item-body {
+  flex: 1;
+}
+
+.task-item-title {
+  font-size: 0.9rem;
+}
+
+.task-timer-btn {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  background-color: var(--bg-elevated);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  color: var(--text-soft);
+  transition: all 0.2s ease;
+}
+
+.task-timer-btn:hover {
+  background-color: var(--primary-soft);
+  border-color: var(--primary);
+}
+
+.task-timer-btn--active {
+  background-color: var(--primary-soft);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.task-timer-btn--running {
+  background-color: var(--primary);
+  color: #f5f0e8;
+  border-color: var(--primary);
+  animation: pulse-timer 2s ease-in-out infinite;
+}
+
+@keyframes pulse-timer {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+.task-timer-icon {
+  font-size: 1rem;
+}
+
+.task-timer-time {
+  font-variant-numeric: tabular-nums;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.pomodoro {
+  margin-top: 10px;
+  padding: 14px 14px 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+}
+
+.pomodoro-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.pomodoro-phase {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.pomodoro-phase--focus {
+  background-color: var(--primary-soft);
+  color: var(--primary);
+}
+
+.pomodoro-phase--break {
+  background-color: rgba(94, 180, 130, 0.2);
+  color: #2d6a4f;
+}
+
+.pomodoro-task-label {
+  font-size: 0.8rem;
+  color: var(--text-soft);
+}
+
+.pomodoro-time {
+  font-size: 2.4rem;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  margin: 6px 0 8px;
+}
+
+.pomodoro-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.pomodoro-hint {
+  margin: 8px 0 0;
+  font-size: 0.8rem;
+  color: var(--text-soft);
+}
+
+.primary-btn,
+.secondary-btn,
+.ghost-btn {
+  flex: 1;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  font-size: 0.9rem;
+}
+
+.primary-btn {
+  background-color: var(--primary);
+  color: #f5f0e8;
+}
+
+.secondary-btn {
+  background-color: transparent;
+  color: var(--primary);
+  border-color: rgba(139, 105, 20, 0.5);
+}
+
+.ghost-btn {
+  background-color: transparent;
+  color: var(--text-soft);
+  border-color: var(--border-subtle);
+}
+
+.binder {
+  margin-top: 10px;
+  padding: 12px 14px 10px;
+}
+
+.binder-label {
+  display: block;
+  font-size: 0.8rem;
+  margin-bottom: 6px;
+  color: var(--text-soft);
+}
+
+.binder-select {
+  width: 100%;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  padding: 8px 10px;
+  font-size: 0.9rem;
+  background-color: var(--bg-elevated);
+  color: var(--text-main);
+}
+
+.level-filter {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.level-filter-label {
+  font-size: 0.8rem;
+  color: var(--text-soft);
+}
