@@ -16,8 +16,8 @@ export const defaultRoutines = {
       done: false,
     },
     {
-      id: 'd-reset-entry',
-      title: 'Girişteki ayakkabılardan 3 tanesini düzelt',
+      id: 'd-mail',
+      title: 'Gelen posta/kutu birikintisini 5 dakika kontrol et',
       level: 'light',
       done: false,
     },
