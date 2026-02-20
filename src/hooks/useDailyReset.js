@@ -22,7 +22,27 @@ export function useDailyReset(state, setState) {
       if (!prev) return prev
       const next = { ...prev }
 
+      // Daily reset and progress tracking
       if (next.routines?.lastDailyReset !== today) {
+        // Save yesterday's progress
+        if (next.routines?.lastDailyReset) {
+          const completedCount = next.routines.daily.filter(t => t.done).length
+          const totalCount = next.routines.daily.length
+          
+          next.progress = {
+            ...next.progress,
+            daily: [
+              ...(next.progress?.daily || []),
+              {
+                date: next.routines.lastDailyReset,
+                completed: completedCount,
+                total: totalCount,
+                percentage: Math.round((completedCount / totalCount) * 100)
+              }
+            ].slice(-30) // Keep last 30 days
+          }
+        }
+
         next.routines = {
           ...next.routines,
           lastDailyReset: today,
@@ -30,7 +50,27 @@ export function useDailyReset(state, setState) {
         }
       }
 
+      // Weekly reset and progress tracking
       if (next.routines?.lastWeeklyReset !== week) {
+        // Save last week's progress
+        if (next.routines?.lastWeeklyReset) {
+          const completedCount = next.routines.weekly.filter(t => t.done).length
+          const totalCount = next.routines.weekly.length
+          
+          next.progress = {
+            ...next.progress,
+            weekly: [
+              ...(next.progress?.weekly || []),
+              {
+                week: next.routines.lastWeeklyReset,
+                completed: completedCount,
+                total: totalCount,
+                percentage: Math.round((completedCount / totalCount) * 100)
+              }
+            ].slice(-12) // Keep last 12 weeks
+          }
+        }
+
         next.routines = {
           ...next.routines,
           lastWeeklyReset: week,

@@ -9,6 +9,7 @@ import { PomodoroTimer } from './components/Pomodoro/PomodoroTimer.jsx'
 import { PomodoroTaskBinder } from './components/Pomodoro/PomodoroTaskBinder.jsx'
 import { DopaminTemizlik } from './components/Dopamin/DopaminTemizlik.jsx'
 import { CelebrationConfetti } from './components/Tasks/CelebrationConfetti.jsx'
+import { ProgressChart } from './components/Progress/ProgressChart.jsx'
 import { dopamin_odakli_gorev } from './utils/dopamin_odakli_gorev.js'
 
 const TABS = {
@@ -255,6 +256,9 @@ function RoutinesPage() {
       <p className="page-description">
         Tekrar eden işleri buradan takip edeceksin. Her gün otomatik sıfırlanacak.
       </p>
+      
+      <ProgressChart />
+      
       <RoutineTabs active={activeKind} onChange={setActiveKind} />
       <RoutineList
         kind={activeKind}

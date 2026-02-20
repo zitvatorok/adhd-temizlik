@@ -18,6 +18,10 @@ const initialState = {
     lastDailyReset: null,
     lastWeeklyReset: null,
   },
+  progress: {
+    daily: [],
+    weekly: [],
+  },
   pomodoro: {
     boundTaskId: null,
   },
@@ -54,6 +58,10 @@ function migrateState(state) {
       ...(state.routines || {}),
       daily: state.routines?.daily || initialState.routines.daily,
       weekly: state.routines?.weekly || initialState.routines.weekly,
+    },
+    progress: {
+      ...initialState.progress,
+      ...(state.progress || {}),
     },
     ui: {
       ...initialState.ui,
