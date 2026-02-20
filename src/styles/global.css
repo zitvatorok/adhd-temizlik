@@ -209,60 +209,74 @@ button {
 /* Açılış dopamin görevi (header'da, M4 dostu) */
 .dopamin-acilis {
   margin-top: 12px;
-  padding: 12px 14px;
+  padding: 16px 20px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   align-items: center;
   text-align: center;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  z-index: 2;
 }
 
 .dopamin-acilis-label {
   margin: 0;
-  font-size: 0.75rem;
-  color: var(--text-soft);
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.8);
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  font-weight: 500;
 }
 
 .dopamin-acilis-gorev {
   margin: 0;
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 600;
-  color: var(--text-main);
+  color: #ffffff;
   line-height: 1.3;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .dopamin-acilis-btn {
-  padding: 10px 20px;
+  padding: 12px 24px;
   border-radius: var(--radius-pill);
   border: none;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
-  background: var(--primary);
-  color: var(--bg-elevated);
-  transition: transform 0.12s ease;
+  background: rgba(255, 255, 255, 0.9);
+  color: #667eea;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .dopamin-acilis-btn:active {
-  transform: scale(0.98);
+  transform: scale(0.96);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
 .dopamin-acilis-btn:hover {
-  background: var(--accent);
+  background: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .dopamin-acilis-kutlama {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   font-weight: 700;
-  color: var(--primary);
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .dopamin-acilis-kutlama-alt {
   margin: 0;
-  font-size: 0.9rem;
-  color: var(--text-soft);
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
 }
 
