@@ -6,6 +6,7 @@ export const ROOM_IDS = {
   PARENT_BATHROOM: 'parent-bathroom',
   KIDS: 'kids',
   ENTREE: 'entree',
+  STUDY: 'study',
 }
 
 export const defaultRooms = {
@@ -358,6 +359,70 @@ export const defaultRooms = {
       {
         id: 'k-closet-7',
         title: 'Kıyafet düzenleme - küçük, yırtık veya giyilmeyen kıyafetleri ayır',
+        level: 'deep',
+        done: false,
+      },
+    ],
+  },
+  [ROOM_IDS.STUDY]: {
+    id: ROOM_IDS.STUDY,
+    name: 'Çalışma Odası',
+    tasks: [
+      { id: 's-desk-surface', title: 'Çalışma masası üstünü boşalt', level: 'light', done: false },
+      { id: 's-papers', title: 'Kağıtları tek bir desteye topla', level: 'light', done: false },
+      { id: 's-pens', title: 'Kalemleri kalemliğe düzenle', level: 'light', done: false },
+      { id: 's-chair', title: 'Sandalyeyi masaya doğru it', level: 'light', done: false },
+      {
+        id: 's-computer',
+        title: 'Bilgisayar ekranını ve klavyeyi sil',
+        level: 'medium',
+        done: false,
+      },
+      {
+        id: 's-cables',
+        title: 'Kabloları düzenle ve topla',
+        level: 'medium',
+        done: false,
+      },
+      {
+        id: 's-closet-1',
+        title: 'Çalışma dolabı içi düzenleme - bir rafı seç ve düzenle',
+        level: 'deep',
+        done: false,
+      },
+      {
+        id: 's-closet-2',
+        title: 'Çekmece boşaltma - masanın veya dolabın çekmecelerinden birini düzenle',
+        level: 'deep',
+        done: false,
+      },
+      {
+        id: 's-closet-3',
+        title: 'Kitaplık düzenleme - bir rafı seç ve kitapları düzenle',
+        level: 'deep',
+        done: false,
+      },
+      {
+        id: 's-closet-4',
+        title: 'Ofis malzemeleri ayıklama - boş, kırık veya kullanılmayan eşyaları ayır',
+        level: 'deep',
+        done: false,
+      },
+      {
+        id: 's-closet-5',
+        title: 'Raf silme - kitaplık veya dolap raflarını nemli bezle sil',
+        level: 'deep',
+        done: false,
+      },
+      {
+        id: 's-closet-6',
+        title: 'Masa altı temizlik - masanın altını süpür ve kabloları düzenle',
+        level: 'deep',
+        done: false,
+      },
+      {
+        id: 's-closet-7',
+        title: 'Dosya düzenleme - dosyaları tasnif et ve gereksizleri ayır',
         level: 'deep',
         done: false,
       },

@@ -216,7 +216,7 @@ function RoomsPage() {
     state: { rooms, ui },
     actions: { setSelectedRoom, toggleRoomTask },
   } = useAppState()
-  const [levelFilter, setLevelFilter] = useState('all')
+  const [levelFilter, setLevelFilter] = useState('light')
 
   const selectedRoom = rooms[ui.selectedRoomId]
 
@@ -247,7 +247,7 @@ function RoutinesPage() {
     actions: { toggleRoutineTask },
   } = useAppState()
   const [activeKind, setActiveKind] = useState('daily')
-  const [levelFilter, setLevelFilter] = useState('all')
+  const [levelFilter, setLevelFilter] = useState('light')
 
   return (
     <section className="page fade-in">
@@ -311,13 +311,6 @@ function LevelFilter({ value, onChange }) {
     <div className="level-filter">
       <span className="level-filter-label">Şu anki enerjin:</span>
       <div className="chip-group">
-        <button
-          type="button"
-          className={`chip tap-target ${value === 'all' ? 'chip--active' : ''}`}
-          onClick={() => onChange('all')}
-        >
-          Hepsi
-        </button>
         <button
           type="button"
           className={`chip tap-target ${value === 'light' ? 'chip--active' : ''}`}
