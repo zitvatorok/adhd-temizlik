@@ -76,14 +76,15 @@ function AppShell() {
           <p className="app-subtitle">Küçük adımlar, gerçek ilerleme.</p>
           <MotivationBanner />
         </div>
-        <DopaminAcilisGorevi
-          gorev={acilisGorevi}
-          tamamlandi={gorevTamamlandi}
-          kutlamaKey={kutlamaKey}
-          onBitirdim={goreviBitirdim}
-          onYeniGorev={yeniGorev}
-        />
       </header>
+
+      <DopaminAcilisGorevi
+        gorev={acilisGorevi}
+        tamamlandi={gorevTamamlandi}
+        kutlamaKey={kutlamaKey}
+        onBitirdim={goreviBitirdim}
+        onYeniGorev={yeniGorev}
+      />
 
       <main className="app-main">
         <div
