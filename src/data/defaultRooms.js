@@ -391,63 +391,25 @@ export const defaultRooms = {
     id: ROOM_IDS.ENTREE,
     name: 'Antre',
     tasks: [
-      { id: 'e-shoes', title: 'Ayakkabıları düzenle', level: 'light', done: false },
+      // Hafif seviye - günlük rutinlerden
+      { id: 'e-shoe-rack', title: 'Ayakkabılığın üstünü boşalt (3 dk)', level: 'light', done: false },
+      { id: 'e-floor-check', title: 'Koridor zeminini kontrol et', level: 'light', done: false },
       { id: 'e-surfaces', title: 'Giriş yüzeylerini (konsol, raf) boşalt', level: 'light', done: false },
-      { id: 'e-floor', title: 'Yerdeki 5 eşyayı yerine kaldır', level: 'medium', done: false },
-      {
-        id: 'e-coat-rack',
-        title: 'Vestiyer/askılıktaki paltoları ve çantaları düzenle',
-        level: 'medium',
-        done: false,
-      },
-      {
-        id: 'e-door',
-        title: 'Kapı arkasındaki eşyaları (şemsiye, çanta vb.) düzenle',
-        level: 'light',
-        done: false,
-      },
-      {
-        id: 'e-closet-1',
-        title: 'Dolap içi düzenleme - giriş dolabını veya bir rafı seç ve düzenle',
-        level: 'deep',
-        done: false,
-      },
-      {
-        id: 'e-closet-2',
-        title: 'Ayakkabılık temizliği - ayakkabıları çıkar, tabanı süpür, düzenle',
-        level: 'deep',
-        done: false,
-      },
-      {
-        id: 'e-closet-3',
-        title: 'Çekmece boşaltma - giriş çekmecelerinden birini düzenle',
-        level: 'deep',
-        done: false,
-      },
-      {
-        id: 'e-closet-4',
-        title: 'Eşya ayıklama - kullanılmayan, fazla veya kırık eşyaları ayır',
-        level: 'deep',
-        done: false,
-      },
-      {
-        id: 'e-closet-5',
-        title: 'Raf silme - üst rafları veya dolap içi raflarını nemli bezle sil',
-        level: 'deep',
-        done: false,
-      },
-      {
-        id: 'e-closet-6',
-        title: 'Şemsiye ve yağmurluk bölümü düzenleme',
-        level: 'deep',
-        done: false,
-      },
-      {
-        id: 'e-closet-7',
-        title: 'Anahtarlık ve küçük eşyaları düzenleme',
-        level: 'deep',
-        done: false,
-      },
+      { id: 'e-door-items', title: 'Kapı arkasındaki eşyaları (şemsiye, çanta vb.) düzenle', level: 'light', done: false },
+      
+      // Orta seviye - günlük ve haftalık rutinlerden
+      { id: 'e-coat-rack', title: 'Portmanto altını hızlı toparla (5 dk)', level: 'medium', done: false },
+      { id: 'e-closet-reset', title: 'Koridor gömme dolap: 15 dk mini reset', level: 'medium', done: false },
+      { id: 'e-table-review', title: 'Ertelenen tablo setini gözden geçir', level: 'medium', done: false },
+      { id: 'e-zamazingo', title: 'Zamazingo kutusunu düzenle (15 dk)', level: 'medium', done: false },
+      
+      // Derin seviye - haftalık rutinlerden ve mevcut derin görevler
+      { id: 'e-shelves-organize', title: 'En üstten başlayarak dolap raflarını düzenle', level: 'deep', done: false },
+      { id: 'e-medicine-check', title: 'İlaçları süresi kontrol et + yerleştir', level: 'deep', done: false },
+      { id: 'e-closet-organize', title: 'Dolap içi düzenleme - giriş dolabını veya bir rafı seç', level: 'deep', done: false },
+      { id: 'e-shoe-clean', title: 'Ayakkabılık temizliği - ayakkabıları çıkar, tabanı süpür', level: 'deep', done: false },
+      { id: 'e-drawer-organize', title: 'Çekmece boşaltma - giriş çekmecelerinden birini düzenle', level: 'deep', done: false },
+      { id: 'e-item-culling', title: 'Eşya ayıklama - kullanılmayan, fazla veya kırık eşyaları ayır', level: 'deep', done: false },
     ],
   },
 }
