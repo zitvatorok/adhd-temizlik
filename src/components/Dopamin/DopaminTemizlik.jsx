@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import { CelebrationConfetti } from '../Tasks/CelebrationConfetti.jsx'
+import { useAppState } from '../../context/AppStateContext.jsx'
 
 const GOREVLER_5_DAKIKA = [
   'Bulaşık makinesini boşalt',
@@ -31,9 +32,14 @@ function rastgeleGorev() {
 }
 
 export function DopaminTemizlik() {
+  const { state } = useAppState()
   const [gorev, setGorev] = useState(null)
   const [celebrationKey, setCelebrationKey] = useState(null)
   const [kutlamaGoster, setKutlamaGoster] = useState(false)
+
+  // Calculate daily completed tasks
+  const dailyCompletedCount = state.routines?.daily?.filter(t => t.done).length || 0
+  const dailyTotalCount = state.routines?.daily?.length || 0
 
   const yeniGorev = useCallback(() => {
     setKutlamaGoster(false)
@@ -50,53 +56,71 @@ export function DopaminTemizlik() {
   const kutlamaVar = kutlamaGoster
 
   return (
-    <div className="dopamin-temizlik card-elevated">
-      {/* Başlangıç: kullanıcıdan "Görev al" girdisi */}
-      {gorevYok && (
-        <div className="dopamin-start">
-          <p className="dopamin-intro">
-            Rastgele 5 dakikalık bir görev. Bitirince butona bas, kutlama senin.
-          </p>
-          <button
-            type="button"
-            className="dopamin-btn dopamin-btn--primary tap-target"
-            onClick={yeniGorev}
-          >
-            Görev al
-          </button>
+    <div className="dopamin-temizlik">
+      {/* Daily Tasks Counter */}
+      <div className="daily-counter card-elevated">
+        <h3 className="daily-counter-title">Günlük Tamamlanan Görevler</h3>
+        <div className="daily-counter-stats">
+          <span className="daily-counter-count">{dailyCompletedCount}</span>
+          <span className="daily-counter-total">/ {dailyTotalCount}</span>
         </div>
-      )}
+        <div className="daily-counter-progress">
+          <div 
+            className="daily-counter-bar"
+            style={{ width: `${dailyTotalCount > 0 ? (dailyCompletedCount / dailyTotalCount) * 100 : 0}%` }}
+          />
+        </div>
+      </div>
 
-      {/* Görev gösterildi: kullanıcıdan "Görevi bitirdim" girdisi */}
-      {gorevVar && (
-        <div className="dopamin-task">
-          <p className="dopamin-label">5 dakikalık görevin</p>
-          <p className="dopamin-gorev">{gorev}</p>
-          <button
-            type="button"
-            className="dopamin-btn dopamin-btn--done tap-target"
-            onClick={goreviBitirdim}
-          >
-            Görevi bitirdim
-          </button>
-        </div>
-      )}
+      {/* Dopamin Task Section */}
+      <div className="dopamin-task-section card-elevated">
+        {/* Başlangıç: kullanıcıdan "Görev al" girdisi */}
+        {gorevYok && (
+          <div className="dopamin-start">
+            <p className="dopamin-intro">
+              Rastgele 5 dakikalık bir görev. Bitirince butona bas, kutlama senin.
+            </p>
+            <button
+              type="button"
+              className="dopamin-btn dopamin-btn--primary tap-target"
+              onClick={yeniGorev}
+            >
+              Görev al
+            </button>
+          </div>
+        )}
 
-      {/* Kutlama: konfeti + mesaj, sonra "Yeni görev" girdisi */}
-      {kutlamaVar && (
-        <div className="dopamin-celebration">
-          <CelebrationConfetti triggerKey={celebrationKey} />
-          <p className="dopamin-celebration-title">Harika! Tebrikler!</p>
-          <p className="dopamin-celebration-text">Dopamin kazandın.</p>
-          <button
-            type="button"
-            className="dopamin-btn dopamin-btn--primary tap-target"
-            onClick={yeniGorev}
-          >
-            Yeni görev al
-          </button>
-        </div>
-      )}
+        {/* Görev gösterildi: kullanıcıdan "Görevi bitirdim" girdisi */}
+        {gorevVar && (
+          <div className="dopamin-task">
+            <p className="dopamin-label">5 dakikalık görevin</p>
+            <p className="dopamin-gorev">{gorev}</p>
+            <button
+              type="button"
+              className="dopamin-btn dopamin-btn--done tap-target"
+              onClick={goreviBitirdim}
+            >
+              Görevi bitirdim
+            </button>
+          </div>
+        )}
+
+        {/* Kutlama: konfeti + mesaj, sonra "Yeni görev" girdisi */}
+        {kutlamaVar && (
+          <div className="dopamin-celebration">
+            <CelebrationConfetti triggerKey={celebrationKey} />
+            <p className="dopamin-celebration-title">Harika! Tebrikler!</p>
+            <p className="dopamin-celebration-text">Dopamin kazandın.</p>
+            <button
+              type="button"
+              className="dopamin-btn dopamin-btn--primary tap-target"
+              onClick={yeniGorev}
+            >
+              Yeni görev al
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
