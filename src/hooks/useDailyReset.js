@@ -13,10 +13,16 @@ function getWeekKey() {
   return `${d.getFullYear()}-W${week}`
 }
 
+function isMonday() {
+  const d = new Date()
+  return d.getDay() === 1 // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+}
+
 export function useDailyReset(state, setState) {
   useEffect(() => {
     const today = getTodayKey()
     const week = getWeekKey()
+    const monday = isMonday()
 
     setState((prev) => {
       if (!prev) return prev
@@ -43,15 +49,25 @@ export function useDailyReset(state, setState) {
           }
         }
 
+        // Reset daily routines
         next.routines = {
           ...next.routines,
           lastDailyReset: today,
           daily: next.routines.daily.map((t) => ({ ...t, done: false })),
         }
+
+        // Reset room tasks daily
+        next.rooms = Object.keys(next.rooms).reduce((acc, roomId) => {
+          acc[roomId] = {
+            ...next.rooms[roomId],
+            tasks: next.rooms[roomId].tasks.map((task) => ({ ...task, done: false }))
+          }
+          return acc
+        }, {})
       }
 
-      // Weekly reset and progress tracking
-      if (next.routines?.lastWeeklyReset !== week) {
+      // Weekly reset and progress tracking (only on Monday)
+      if (monday && next.routines?.lastWeeklyReset !== week) {
         // Save last week's progress
         if (next.routines?.lastWeeklyReset) {
           const completedCount = next.routines.weekly.filter(t => t.done).length
