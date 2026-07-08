@@ -1,344 +1,607 @@
-import { useState, useRef, useEffect, useCallback } from 'react'
-import './App.css'
-import { AppStateProvider, useAppState } from './context/AppStateContext.jsx'
-import { RoomSelector } from './components/Rooms/RoomSelector.jsx'
-import { RoomTaskList } from './components/Rooms/RoomTaskList.jsx'
-import { RoutineTabs } from './components/Routines/RoutineTabs.jsx'
-import { RoutineList } from './components/Routines/RoutineList.jsx'
-import { PomodoroTimer } from './components/Pomodoro/PomodoroTimer.jsx'
-import { PomodoroTaskBinder } from './components/Pomodoro/PomodoroTaskBinder.jsx'
-import { DopaminTemizlik } from './components/Dopamin/DopaminTemizlik.jsx'
-import { CelebrationConfetti } from './components/Tasks/CelebrationConfetti.jsx'
-import { ProgressChart } from './components/Progress/ProgressChart.jsx'
-import { dopamin_odakli_gorev } from './utils/dopamin_odakli_gorev.js'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { DEFAULT_ROOMS, QUICK_TASKS, ROOM_ORDER } from "./data.js";
+import {
+  applyDailyRollover,
+  clearAllDone,
+  getTaskStats,
+  loadStoredState,
+  millisecondsUntilNextLocalMidnight,
+  persistState,
+} from "./state.js";
 
-const TABS = {
-  ROOMS: 'rooms',
-  ROUTINES: 'routines',
-  POMODORO: 'pomodoro',
-  DOPAMIN: 'dopamin',
-  SETTINGS: 'settings',
+const TABS = [
+  { id: "rooms", label: "Odalar", icon: "⌂" },
+  { id: "routines", label: "Rutinler", icon: "✓" },
+  { id: "focus", label: "Odak", icon: "◷" },
+  { id: "quick", label: "Dopamin", icon: "✦" },
+  { id: "settings", label: "Ayarlar", icon: "⚙" },
+];
+
+const LEVELS = [
+  { id: "light", label: "Hafif", tone: "low" },
+  { id: "medium", label: "Orta", tone: "mid" },
+  { id: "deep", label: "Derin", tone: "high" },
+];
+
+const LEVEL_LABELS = Object.fromEntries(LEVELS.map((level) => [level.id, level.label]));
+
+function useMidnightRollover(setState) {
+  useEffect(() => {
+    let timerId;
+
+    const runRollover = () => {
+      setState((current) => applyDailyRollover(current, new Date()));
+    };
+
+    const schedule = () => {
+      window.clearTimeout(timerId);
+      timerId = window.setTimeout(() => {
+        runRollover();
+        schedule();
+      }, millisecondsUntilNextLocalMidnight(new Date()));
+    };
+
+    const handleResume = () => {
+      if (!document.hidden) runRollover();
+    };
+
+    schedule();
+    window.addEventListener("focus", runRollover);
+    document.addEventListener("visibilitychange", handleResume);
+
+    return () => {
+      window.clearTimeout(timerId);
+      window.removeEventListener("focus", runRollover);
+      document.removeEventListener("visibilitychange", handleResume);
+    };
+  }, [setState]);
 }
 
-const TAB_IDS = [TABS.ROOMS, TABS.ROUTINES, TABS.POMODORO, TABS.DOPAMIN, TABS.SETTINGS]
+function getRandomQuickTask() {
+  return QUICK_TASKS[Math.floor(Math.random() * QUICK_TASKS.length)];
+}
 
 function App() {
-  return (
-    <AppStateProvider>
-      <AppShell />
-    </AppStateProvider>
-  )
-}
+  const [state, setState] = useState(() => loadStoredState(window.localStorage, new Date()));
 
-function AppShell() {
-  const [activeTab, setActiveTab] = useState(TABS.ROOMS)
-  const scrollRef = useRef(null)
-  const isScrollingProgrammatically = useRef(false)
-  const index = TAB_IDS.indexOf(activeTab)
-
-  // Açılışta tek rastgele görev (M4: lazy init, tek sefer)
-  const [acilisGorevi, setAcilisGorevi] = useState(() => dopamin_odakli_gorev())
-  const [gorevTamamlandi, setGorevTamamlandi] = useState(false)
-  const [kutlamaKey, setKutlamaKey] = useState(0)
-
-  const goreviBitirdim = useCallback(() => {
-    setGorevTamamlandi(true)
-    setKutlamaKey((k) => k + 1)
-  }, [])
-
-  const yeniGorev = useCallback(() => {
-    setGorevTamamlandi(false)
-    setAcilisGorevi(dopamin_odakli_gorev())
-  }, [])
+  useMidnightRollover(setState);
 
   useEffect(() => {
-    if (!scrollRef.current) return
-    isScrollingProgrammatically.current = true
-    scrollRef.current.scrollTo({ left: index * scrollRef.current.clientWidth, behavior: 'smooth' })
-    setTimeout(() => {
-      isScrollingProgrammatically.current = false
-    }, 300)
-  }, [activeTab, index])
+    persistState(state, window.localStorage);
+  }, [state]);
 
-  const handleScroll = () => {
-    if (isScrollingProgrammatically.current) return
-    const el = scrollRef.current
-    if (!el) return
-    const i = Math.round(el.scrollLeft / el.clientWidth)
-    const id = TAB_IDS[i]
-    if (id != null && id !== activeTab) setActiveTab(id)
-  }
+  const commit = useCallback((updater) => {
+    setState((current) => {
+      const fresh = applyDailyRollover(current, new Date());
+      return updater(fresh);
+    });
+  }, []);
+
+  const activeTab = state.ui.activeTab || "rooms";
+  const stats = useMemo(() => getTaskStats(state), [state]);
+
+  const actions = useMemo(
+    () => ({
+      setActiveTab(tab) {
+        commit((current) => ({ ...current, ui: { ...current.ui, activeTab: tab } }));
+      },
+      setSelectedRoom(roomId) {
+        commit((current) => ({ ...current, ui: { ...current.ui, selectedRoomId: roomId } }));
+      },
+      setEnergy(energy) {
+        commit((current) => ({ ...current, ui: { ...current.ui, energy } }));
+      },
+      toggleRoomTask(roomId, taskId) {
+        commit((current) => {
+          const room = current.rooms[roomId];
+          if (!room) return current;
+
+          return {
+            ...current,
+            rooms: {
+              ...current.rooms,
+              [roomId]: {
+                ...room,
+                tasks: room.tasks.map((task) =>
+                  task.id === taskId ? { ...task, done: !task.done } : task,
+                ),
+              },
+            },
+          };
+        });
+      },
+      toggleRoutineTask(kind, taskId) {
+        commit((current) => ({
+          ...current,
+          routines: {
+            ...current.routines,
+            [kind]: current.routines[kind].map((task) =>
+              task.id === taskId ? { ...task, done: !task.done } : task,
+            ),
+          },
+        }));
+      },
+      bindPomodoroToTask(taskId) {
+        commit((current) => ({
+          ...current,
+          pomodoro: { ...current.pomodoro, boundTaskId: taskId || null },
+        }));
+      },
+      clearToday() {
+        commit((current) => clearAllDone(current));
+      },
+    }),
+    [commit],
+  );
 
   return (
     <div className="app-shell">
-      <header className="app-header fade-in">
-        <div className="app-header-content">
-          <h1 className="app-title">Piling Up!</h1>
-          <p className="app-subtitle">Küçük adımlar, gerçek ilerleme.</p>
-          <MotivationBanner />
-        </div>
-      </header>
+      <SideNav activeTab={activeTab} onChange={actions.setActiveTab} />
 
-      <DopaminAcilisGorevi
-        gorev={acilisGorevi}
-        tamamlandi={gorevTamamlandi}
-        kutlamaKey={kutlamaKey}
-        onBitirdim={goreviBitirdim}
-        onYeniGorev={yeniGorev}
-      />
+      <div className="workspace">
+        <TopBar state={state} stats={stats} />
 
-      <main className="app-main">
-        <div
-          ref={scrollRef}
-          className="swipe-pages"
-          onScroll={handleScroll}
-          role="region"
-          aria-label="Sayfalar arası kaydır"
-        >
-          <div className="swipe-page">
-            <RoomsPage />
-          </div>
-          <div className="swipe-page">
-            <RoutinesPage />
-          </div>
-          <div className="swipe-page">
-            <PomodoroPage />
-          </div>
-          <div className="swipe-page">
-            <DopaminPage />
-          </div>
-          <div className="swipe-page">
-            <SettingsPage />
-          </div>
-        </div>
-      </main>
+        <main className="content-area">
+          {activeTab === "rooms" && <RoomsPage state={state} actions={actions} />}
+          {activeTab === "routines" && <RoutinesPage state={state} actions={actions} />}
+          {activeTab === "focus" && <FocusPage state={state} actions={actions} />}
+          {activeTab === "quick" && <QuickPage state={state} />}
+          {activeTab === "settings" && <SettingsPage state={state} actions={actions} stats={stats} />}
+        </main>
+      </div>
 
-      <BottomNav activeTab={activeTab} onChange={setActiveTab} />
+      <BottomNav activeTab={activeTab} onChange={actions.setActiveTab} />
     </div>
-  )
+  );
 }
 
-function DopaminAcilisGorevi({ gorev, tamamlandi, kutlamaKey, onBitirdim, onYeniGorev }) {
+function SideNav({ activeTab, onChange }) {
   return (
-    <div className="dopamin-acilis card-elevated">
-      {!tamamlandi ? (
-        <>
-          <p className="dopamin-acilis-label">5 dakikalık görevin</p>
-          <p className="dopamin-acilis-gorev">{gorev}</p>
+    <aside className="side-nav" aria-label="Ana menü">
+      <div className="brand">
+        <span className="brand-mark">P</span>
+        <div>
+          <p className="brand-title">Piling Up</p>
+          <p className="brand-subtitle">Ev akışı</p>
+        </div>
+      </div>
+
+      <nav className="nav-list">
+        {TABS.map((tab) => (
           <button
             type="button"
-            className="dopamin-acilis-btn tap-target"
-            onClick={onBitirdim}
+            className={`nav-button ${activeTab === tab.id ? "is-active" : ""}`}
+            onClick={() => onChange(tab.id)}
+            key={tab.id}
+            title={tab.label}
           >
-            Bitirdim
+            <span className="nav-icon" aria-hidden="true">
+              {tab.icon}
+            </span>
+            <span>{tab.label}</span>
           </button>
-        </>
-      ) : (
-        <>
-          <CelebrationConfetti triggerKey={kutlamaKey} />
-          <p className="dopamin-acilis-kutlama">Harika! Tebrikler!</p>
-          <p className="dopamin-acilis-kutlama-alt">Dopamin kazandın.</p>
-          <button
-            type="button"
-            className="dopamin-acilis-btn tap-target"
-            onClick={onYeniGorev}
-          >
-            Yeni görev al
-          </button>
-        </>
-      )}
-    </div>
-  )
-}
-
-function MotivationBanner() {
-  const messages = [
-    'Sadece 5 dakikalık bir adım bile sayılır.',
-    'Mükemmel değil, ilerleme önemli.',
-    'Bugün sadece bir köşeyi düzeltmek bile yeter.',
-  ]
-  const index = new Date().getDate() % messages.length
-
-  return <p className="motivation-text">{messages[index]}</p>
+        ))}
+      </nav>
+    </aside>
+  );
 }
 
 function BottomNav({ activeTab, onChange }) {
   return (
-    <nav className="bottom-nav card-elevated">
-      <BottomNavItem
-        label="Odalar"
-        tabId={TABS.ROOMS}
-        activeTab={activeTab}
-        onChange={onChange}
-      />
-      <BottomNavItem
-        label="Rutinler"
-        tabId={TABS.ROUTINES}
-        activeTab={activeTab}
-        onChange={onChange}
-      />
-      <BottomNavItem
-        label="Zamanlayıcı"
-        tabId={TABS.POMODORO}
-        activeTab={activeTab}
-        onChange={onChange}
-      />
-      <BottomNavItem
-        label="Dopamin"
-        tabId={TABS.DOPAMIN}
-        activeTab={activeTab}
-        onChange={onChange}
-      />
-      <BottomNavItem
-        label="Ayarlar"
-        tabId={TABS.SETTINGS}
-        activeTab={activeTab}
-        onChange={onChange}
-      />
+    <nav className="bottom-nav" aria-label="Ana menü">
+      {TABS.map((tab) => (
+        <button
+          type="button"
+          className={`bottom-nav-button ${activeTab === tab.id ? "is-active" : ""}`}
+          onClick={() => onChange(tab.id)}
+          key={tab.id}
+          title={tab.label}
+        >
+          <span className="nav-icon" aria-hidden="true">
+            {tab.icon}
+          </span>
+          <span>{tab.label}</span>
+        </button>
+      ))}
     </nav>
-  )
+  );
 }
 
-function BottomNavItem({ label, tabId, activeTab, onChange }) {
-  const isActive = activeTab === tabId
+function TopBar({ state, stats }) {
+  const today = new Date().toLocaleDateString("tr-TR", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  });
+
   return (
-    <button
-      type="button"
-      className={`bottom-nav-item tap-target ${isActive ? 'bottom-nav-item--active' : ''}`}
-      onClick={() => onChange(tabId)}
+    <header className="top-bar">
+      <div className="top-copy">
+        <p className="app-kicker">Bugün</p>
+        <p className="eyebrow">{today}</p>
+        <h1>Piling Up</h1>
+        <p className="top-note">Küçük adımlar, gerçek ilerleme.</p>
+      </div>
+
+      <div className="summary-strip" aria-label="Bugünkü ilerleme">
+        <ProgressRing value={stats.percentage} />
+        <div className="summary-copy">
+          <strong>
+            {stats.done}/{stats.total}
+          </strong>
+          <span>00:00 reset</span>
+        </div>
+        <div className="summary-copy hide-small">
+          <strong>{state.progress.daily.length}</strong>
+          <span>kayıtlı gün</span>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+function ProgressRing({ value }) {
+  return (
+    <div
+      className="progress-ring"
+      style={{ "--progress": `${value}%` }}
+      role="img"
+      aria-label={`İlerleme ${value}%`}
     >
-      <span className="bottom-nav-label">{label}</span>
-    </button>
-  )
+      <span>{value}</span>
+    </div>
+  );
 }
 
-function RoomsPage() {
-  const {
-    state: { rooms, ui },
-    actions: { setSelectedRoom, toggleRoomTask },
-  } = useAppState()
-  const [levelFilter, setLevelFilter] = useState('light')
-
-  const selectedRoom = rooms[ui.selectedRoomId]
+function RoomsPage({ state, actions }) {
+  const selectedRoomId = state.ui.selectedRoomId;
+  const selectedRoom = state.rooms[selectedRoomId] || DEFAULT_ROOMS[selectedRoomId];
+  const energy = state.ui.energy || "light";
 
   return (
-    <section className="page fade-in">
-      <h2 className="page-title">Odalara göre temizlik</h2>
-      <p className="page-description">
-        Sadece bir odayı seç ve küçük, yönetilebilir adımlarla ilerle.
-      </p>
-      <RoomSelector
-        rooms={rooms}
-        selectedRoomId={ui.selectedRoomId}
-        onSelect={setSelectedRoom}
-      />
-      <LevelFilter value={levelFilter} onChange={setLevelFilter} />
-      <RoomTaskList
-        room={selectedRoom}
-        levelFilter={levelFilter}
-        onToggleTask={toggleRoomTask}
+    <section className="page-section">
+      <SectionHeader title="Odalar" meta={`${selectedRoom.name} · ${LEVEL_LABELS[energy]}`} />
+      <RoomPicker rooms={state.rooms} selectedRoomId={selectedRoomId} onSelect={actions.setSelectedRoom} />
+      <LevelFilter value={energy} onChange={actions.setEnergy} />
+      <TaskList
+        title={selectedRoom.name}
+        tasks={selectedRoom.tasks}
+        levelFilter={energy}
+        onToggle={(taskId) => actions.toggleRoomTask(selectedRoom.id, taskId)}
       />
     </section>
-  )
+  );
 }
 
-function RoutinesPage() {
-  const {
-    state: { routines },
-    actions: { toggleRoutineTask },
-  } = useAppState()
-  const [activeKind, setActiveKind] = useState('daily')
-  const [levelFilter, setLevelFilter] = useState('light')
+function RoutinesPage({ state, actions }) {
+  const [kind, setKind] = useState("daily");
+  const energy = state.ui.energy || "light";
+  const tasks = state.routines[kind] || [];
 
   return (
-    <section className="page fade-in">
-      <h2 className="page-title">Günlük & haftalık rutinler</h2>
-      <p className="page-description">
-        Tekrar eden işleri buradan takip edeceksin. Her gün otomatik sıfırlanacak.
-      </p>
-      
-      <ProgressChart />
-      
-      <RoutineTabs active={activeKind} onChange={setActiveKind} />
-      <RoutineList
-        kind={activeKind}
-        routines={routines[activeKind]}
-        levelFilter={levelFilter}
-        onToggle={toggleRoutineTask}
+    <section className="page-section">
+      <SectionHeader title="Rutinler" meta={kind === "daily" ? "Günlük" : "Haftalık"} />
+      <SegmentedControl
+        value={kind}
+        onChange={setKind}
+        options={[
+          { value: "daily", label: "Günlük" },
+          { value: "weekly", label: "Haftalık" },
+        ]}
       />
-      <LevelFilter value={levelFilter} onChange={setLevelFilter} />
+      <LevelFilter value={energy} onChange={actions.setEnergy} />
+      <TaskList
+        title={kind === "daily" ? "Günlük rutin" : "Haftalık rutin"}
+        tasks={tasks}
+        levelFilter={energy}
+        onToggle={(taskId) => actions.toggleRoutineTask(kind, taskId)}
+      />
+      <ProgressHistory progress={state.progress.daily} />
     </section>
-  )
+  );
 }
 
-function PomodoroPage() {
+function FocusPage({ state, actions }) {
+  const taskOptions = useMemo(() => {
+    const rooms = Object.values(state.rooms).flatMap((room) =>
+      room.tasks.map((task) => ({
+        id: `${room.id}::${task.id}`,
+        legacyId: task.id,
+        label: `${room.name}: ${task.title}`,
+      })),
+    );
+    const daily = state.routines.daily.map((task) => ({
+      id: `daily::${task.id}`,
+      legacyId: task.id,
+      label: `Günlük: ${task.title}`,
+    }));
+    const weekly = state.routines.weekly.map((task) => ({
+      id: `weekly::${task.id}`,
+      legacyId: task.id,
+      label: `Haftalık: ${task.title}`,
+    }));
+
+    return [...rooms, ...daily, ...weekly];
+  }, [state.rooms, state.routines.daily, state.routines.weekly]);
+
+  const selectedTask = taskOptions.find(
+    (task) => task.id === state.pomodoro.boundTaskId || task.legacyId === state.pomodoro.boundTaskId,
+  );
+
   return (
-    <section className="page fade-in">
-      <h2 className="page-title">Odak zamanlayıcısı</h2>
-      <p className="page-description">
-        25 dakika odaklan, 5 dakika mola ver. Görevlerine bağlanacak.
-      </p>
-      <PomodoroTimer />
-      <PomodoroTaskBinder />
+    <section className="page-section">
+      <SectionHeader title="Odak" meta={selectedTask ? "Göreve bağlı" : "Serbest"} />
+      <PomodoroPanel selectedTask={selectedTask?.label} />
+      <label className="select-label" htmlFor="task-binding">
+        Görev
+      </label>
+      <select
+        id="task-binding"
+        className="select-input"
+        value={selectedTask?.id || ""}
+        onChange={(event) => actions.bindPomodoroToTask(event.target.value)}
+      >
+        <option value="">Sadece süre</option>
+        {taskOptions.map((task) => (
+          <option value={task.id} key={task.id}>
+            {task.label}
+          </option>
+        ))}
+      </select>
     </section>
-  )
+  );
 }
 
-function DopaminPage() {
-  return (
-    <section className="page fade-in">
-      <h2 className="page-title">Dopamin odaklı temizlik</h2>
-      <p className="page-description">
-        5 dakikalık rastgele bir görev al, bitirince kutlama senin.
-      </p>
-      <DopaminTemizlik />
-    </section>
-  )
-}
+function QuickPage({ state }) {
+  const [task, setTask] = useState(() => getRandomQuickTask());
+  const [doneCount, setDoneCount] = useState(0);
+  const dailyStats = getTaskStats(state);
 
-function SettingsPage() {
   return (
-    <section className="page fade-in">
-      <h2 className="page-title">Ayarlar</h2>
-      <p className="page-description">
-        Animasyonlar, sesler ve varsayılan oda gibi ayarlar burada olacak.
-      </p>
-      <div className="placeholder-card card-elevated">
-        <p>Basit ayarlar paneli sonraki adımda.</p>
+    <section className="page-section">
+      <SectionHeader title="Dopamin" meta={`${dailyStats.done} tamamlandı`} />
+      <div className="quick-panel">
+        <p className="quick-kicker">5 dakikalık görev</p>
+        <h2>{task}</h2>
+        <div className="quick-actions">
+          <button
+            type="button"
+            className="primary-action"
+            onClick={() => {
+              setDoneCount((count) => count + 1);
+              setTask(getRandomQuickTask());
+            }}
+          >
+            Bitirdim
+          </button>
+          <button type="button" className="secondary-action" onClick={() => setTask(getRandomQuickTask())}>
+            Değiştir
+          </button>
+        </div>
+        <p className="quick-count">{doneCount} kısa görev</p>
       </div>
     </section>
-  )
+  );
+}
+
+function SettingsPage({ state, actions, stats }) {
+  return (
+    <section className="page-section">
+      <SectionHeader title="Ayarlar" meta="Yerel kayıt" />
+      <div className="settings-grid">
+        <div className="settings-panel">
+          <h2>Günlük reset</h2>
+          <p>Son reset: {state.meta.lastResetDate || "bugün"}</p>
+          <p>Bugünkü tikler: {stats.done}</p>
+          <button type="button" className="danger-action" onClick={actions.clearToday}>
+            Bugünkü tikleri temizle
+          </button>
+        </div>
+        <div className="settings-panel">
+          <h2>Varsayılan oda</h2>
+          <select
+            className="select-input"
+            value={state.ui.selectedRoomId}
+            onChange={(event) => actions.setSelectedRoom(event.target.value)}
+          >
+            {ROOM_ORDER.map((roomId) => (
+              <option value={roomId} key={roomId}>
+                {state.rooms[roomId]?.name || roomId}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SectionHeader({ title, meta }) {
+  return (
+    <div className="section-header">
+      <h2>{title}</h2>
+      <span>{meta}</span>
+    </div>
+  );
+}
+
+function RoomPicker({ rooms, selectedRoomId, onSelect }) {
+  return (
+    <div className="pill-row" aria-label="Odalar">
+      {ROOM_ORDER.map((roomId) => {
+        const room = rooms[roomId];
+        if (!room) return null;
+        return (
+          <button
+            type="button"
+            className={`pill-button ${selectedRoomId === roomId ? "is-active" : ""}`}
+            onClick={() => onSelect(roomId)}
+            key={roomId}
+          >
+            {room.name}
+          </button>
+        );
+      })}
+    </div>
+  );
 }
 
 function LevelFilter({ value, onChange }) {
   return (
-    <div className="level-filter">
-      <span className="level-filter-label">Şu anki enerjin:</span>
-      <div className="chip-group">
+    <div className="level-row" aria-label="Enerji seviyesi">
+      {LEVELS.map((level) => (
         <button
           type="button"
-          className={`chip tap-target ${value === 'light' ? 'chip--active' : ''}`}
-          onClick={() => onChange('light')}
+          className={`level-button tone-${level.tone} ${value === level.id ? "is-active" : ""}`}
+          onClick={() => onChange(level.id)}
+          key={level.id}
         >
-          Hafif
+          <span aria-hidden="true" />
+          {level.label}
         </button>
+      ))}
+    </div>
+  );
+}
+
+function SegmentedControl({ value, onChange, options }) {
+  return (
+    <div className="segmented-control">
+      {options.map((option) => (
         <button
           type="button"
-          className={`chip tap-target ${value === 'medium' ? 'chip--active' : ''}`}
-          onClick={() => onChange('medium')}
+          className={value === option.value ? "is-active" : ""}
+          onClick={() => onChange(option.value)}
+          key={option.value}
         >
-          Orta
+          {option.label}
         </button>
-        <button
-          type="button"
-          className={`chip tap-target ${value === 'deep' ? 'chip--active' : ''}`}
-          onClick={() => onChange('deep')}
-        >
-          Derin
+      ))}
+    </div>
+  );
+}
+
+function TaskList({ title, tasks, levelFilter, onToggle }) {
+  const filteredTasks = levelFilter === "all" ? tasks : tasks.filter((task) => task.level === levelFilter);
+  const completed = filteredTasks.filter((task) => task.done).length;
+
+  return (
+    <div className="task-panel">
+      <div className="task-panel-header">
+        <div>
+          <h2>{title}</h2>
+          <span>
+            {completed}/{filteredTasks.length}
+          </span>
+        </div>
+        <div className="mini-progress" aria-hidden="true">
+          <span style={{ width: `${filteredTasks.length ? (completed / filteredTasks.length) * 100 : 0}%` }} />
+        </div>
+      </div>
+
+      <div className="task-list">
+        {filteredTasks.length === 0 ? (
+          <p className="empty-state">Bu seviyede görev yok.</p>
+        ) : (
+          filteredTasks.map((task) => <TaskItem task={task} onToggle={onToggle} key={task.id} />)
+        )}
+      </div>
+    </div>
+  );
+}
+
+function TaskItem({ task, onToggle }) {
+  return (
+    <button
+      type="button"
+      className={`task-item ${task.done ? "is-done" : ""}`}
+      onClick={() => onToggle(task.id)}
+      aria-pressed={task.done}
+    >
+      <span className="check-dot" aria-hidden="true">
+        {task.done ? "✓" : ""}
+      </span>
+      <span className="task-title">{task.title}</span>
+      {task.level && <span className={`level-chip level-chip-${task.level}`}>{LEVEL_LABELS[task.level]}</span>}
+    </button>
+  );
+}
+
+function PomodoroPanel({ selectedTask }) {
+  const [phase, setPhase] = useState("focus");
+  const [remaining, setRemaining] = useState(25 * 60);
+  const [running, setRunning] = useState(false);
+  const intervalRef = useRef(null);
+
+  useEffect(() => {
+    if (!running) return undefined;
+    intervalRef.current = window.setInterval(() => {
+      setRemaining((seconds) => {
+        if (seconds > 1) return seconds - 1;
+        const nextPhase = phase === "focus" ? "break" : "focus";
+        setPhase(nextPhase);
+        return nextPhase === "focus" ? 25 * 60 : 5 * 60;
+      });
+    }, 1000);
+
+    return () => window.clearInterval(intervalRef.current);
+  }, [phase, running]);
+
+  const minutes = String(Math.floor(remaining / 60)).padStart(2, "0");
+  const seconds = String(remaining % 60).padStart(2, "0");
+
+  const reset = () => {
+    setRunning(false);
+    setPhase("focus");
+    setRemaining(25 * 60);
+  };
+
+  return (
+    <div className="pomodoro-panel">
+      <div className="pomodoro-meta">
+        <span className={`phase-badge phase-${phase}`}>{phase === "focus" ? "Odak" : "Mola"}</span>
+        {selectedTask && <span className="bound-task">{selectedTask}</span>}
+      </div>
+      <div className="pomodoro-time">
+        {minutes}:{seconds}
+      </div>
+      <div className="pomodoro-actions">
+        <button type="button" className="primary-action" onClick={() => setRunning((value) => !value)}>
+          {running ? "Duraklat" : "Başlat"}
+        </button>
+        <button type="button" className="secondary-action" onClick={reset}>
+          Sıfırla
         </button>
       </div>
     </div>
-  )
+  );
 }
 
-export default App
+function ProgressHistory({ progress }) {
+  const lastSeven = progress.slice(-7);
+
+  if (!lastSeven.length) {
+    return null;
+  }
+
+  return (
+    <div className="history-panel">
+      <div className="history-header">
+        <h2>Son günler</h2>
+      </div>
+      <div className="history-list">
+        {lastSeven.map((entry) => (
+          <div className="history-row" key={entry.date}>
+            <span>{new Date(`${entry.date}T12:00:00`).toLocaleDateString("tr-TR", { day: "numeric", month: "short" })}</span>
+            <div>
+              <span style={{ width: `${entry.percentage}%` }} />
+            </div>
+            <strong>{entry.percentage}%</strong>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default App;
