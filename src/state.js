@@ -1,7 +1,7 @@
-import { DEFAULT_ROOMS, DEFAULT_ROUTINES, ROOM_IDS } from "./data.js";
+import { DEFAULT_ROOMS, DEFAULT_ROUTINES, ROOM_IDS, SUPPORT_TASKS } from "./data.js";
 
 export const STORAGE_KEY = "adhd-cleaning-app-state-v2";
-export const SCHEMA_VERSION = 3;
+export const SCHEMA_VERSION = 4;
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -17,13 +17,20 @@ const fallbackState = {
     daily: [],
     weekly: [],
   },
+  support: {
+    crisis: SUPPORT_TASKS.crisis,
+    kid: SUPPORT_TASKS.kid,
+  },
   pomodoro: {
     boundTaskId: null,
   },
   ui: {
     selectedRoomId: ROOM_IDS.KITCHEN,
-    activeTab: "rooms",
+    activeTab: "today",
     energy: "light",
+    timeBudget: "5",
+    careMode: "normal",
+    todayMode: "daily",
   },
   meta: {
     schemaVersion: SCHEMA_VERSION,
@@ -62,7 +69,12 @@ function mergeTasks(defaultTasks = [], savedTasks = []) {
   const merged = defaultTasks.map((task) => ({ ...task, ...(savedById.get(task.id) || {}) }));
   const defaultIds = new Set(defaultTasks.map((task) => task.id));
   const extras = savedTasks.filter((task) => task?.id && !defaultIds.has(task.id));
-  return [...merged, ...extras].map((task) => ({ ...task, done: Boolean(task.done) }));
+  return [...merged, ...extras].map((task) => {
+    const done = Boolean(task.done || task.status === "done");
+    const status = done || task.status === "done" ? "done" : ["started", "paused"].includes(task.status) ? task.status : "todo";
+
+    return { ...task, done, status };
+  });
 }
 
 function mergeRooms(savedRooms = {}) {
@@ -91,6 +103,13 @@ function mergeRoutines(savedRoutines = {}) {
   };
 }
 
+function mergeSupport(savedSupport = {}) {
+  return {
+    crisis: mergeTasks(SUPPORT_TASKS.crisis, savedSupport?.crisis || []),
+    kid: mergeTasks(SUPPORT_TASKS.kid, savedSupport?.kid || []),
+  };
+}
+
 export function normalizeState(input) {
   const saved = input && typeof input === "object" ? input : {};
   const ui = {
@@ -100,6 +119,10 @@ export function normalizeState(input) {
 
   if (!DEFAULT_ROOMS[ui.selectedRoomId]) {
     ui.selectedRoomId = ROOM_IDS.KITCHEN;
+  }
+
+  if (!["today", "rooms", "routines", "focus", "quick", "settings"].includes(ui.activeTab)) {
+    ui.activeTab = "today";
   }
 
   return {
@@ -113,6 +136,7 @@ export function normalizeState(input) {
       daily: Array.isArray(saved.progress?.daily) ? saved.progress.daily : [],
       weekly: Array.isArray(saved.progress?.weekly) ? saved.progress.weekly : [],
     },
+    support: mergeSupport(saved.support),
     pomodoro: {
       ...fallbackState.pomodoro,
       ...(saved.pomodoro || {}),
@@ -130,8 +154,10 @@ export function getTaskStats(state) {
   const roomTasks = rooms.flatMap((room) => room.tasks || []);
   const dailyTasks = state.routines?.daily || [];
   const weeklyTasks = state.routines?.weekly || [];
-  const all = [...roomTasks, ...dailyTasks, ...weeklyTasks];
+  const supportTasks = Object.values(state.support || {}).flatMap((tasks) => tasks || []);
+  const all = [...roomTasks, ...dailyTasks, ...weeklyTasks, ...supportTasks];
   const done = all.filter((task) => task.done).length;
+  const active = all.filter((task) => task.status === "started" || task.status === "paused").length;
 
   return {
     done,
@@ -139,6 +165,8 @@ export function getTaskStats(state) {
     percentage: all.length ? Math.round((done / all.length) * 100) : 0,
     roomsDone: roomTasks.filter((task) => task.done).length,
     routinesDone: [...dailyTasks, ...weeklyTasks].filter((task) => task.done).length,
+    supportDone: supportTasks.filter((task) => task.done).length,
+    active,
   };
 }
 
@@ -152,14 +180,18 @@ export function clearAllDone(state) {
         roomId,
         {
           ...room,
-          tasks: room.tasks.map((task) => ({ ...task, done: false })),
+          tasks: room.tasks.map((task) => ({ ...task, done: false, status: "todo" })),
         },
       ]),
     ),
     routines: {
       ...next.routines,
-      daily: next.routines.daily.map((task) => ({ ...task, done: false })),
-      weekly: next.routines.weekly.map((task) => ({ ...task, done: false })),
+      daily: next.routines.daily.map((task) => ({ ...task, done: false, status: "todo" })),
+      weekly: next.routines.weekly.map((task) => ({ ...task, done: false, status: "todo" })),
+    },
+    support: {
+      crisis: next.support.crisis.map((task) => ({ ...task, done: false, status: "todo" })),
+      kid: next.support.kid.map((task) => ({ ...task, done: false, status: "todo" })),
     },
   };
 }
@@ -230,6 +262,13 @@ export function applyDailyRollover(input, now = new Date()) {
 
   return {
     ...cleared,
+    ui: schemaChanged
+      ? {
+          ...cleared.ui,
+          activeTab: "today",
+          todayMode: "daily",
+        }
+      : cleared.ui,
     progress: {
       daily: shouldRecord ? appendDailyProgress(state, previousDate) : state.progress.daily,
       weekly: shouldRecordWeek ? appendWeeklyProgress(state, previousWeek) : state.progress.weekly,
