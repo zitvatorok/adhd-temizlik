@@ -78,6 +78,7 @@ export function SettingsView({ state, actions, stats }) {
               value={`${String(reminder.hour).padStart(2, "0")}:${String(reminder.minute).padStart(2, "0")}`}
               onChange={(event) => {
                 const [hour, minute] = event.target.value.split(":").map(Number);
+                if (!Number.isFinite(hour) || !Number.isFinite(minute)) return;
                 applyReminder({ ...reminder, hour, minute });
               }}
             />

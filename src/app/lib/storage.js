@@ -7,6 +7,9 @@ import { STORAGE_KEY } from "../../state.js";
    bellekte senkron cache + her yazımda write-through. Web'de localStorage kalır. */
 
 let cache = null;
+/* Okuma başarısızsa Preferences'taki veri hâlâ yerinde olabilir; o durumda
+   yazmayı keserek varsayılan state'in gerçek veriyi ezmesini önlüyoruz. */
+let hydrationFailed = false;
 
 export async function initStorage() {
   if (!Capacitor.isNativePlatform()) return;
@@ -24,6 +27,7 @@ export async function initStorage() {
     }
   } catch {
     cache = null;
+    hydrationFailed = true;
   }
 }
 
@@ -34,11 +38,13 @@ export function getStorageLike() {
     getItem: () => cache,
     setItem: (_key, value) => {
       cache = value;
-      Preferences.set({ key: STORAGE_KEY, value });
+      if (hydrationFailed) return;
+      Preferences.set({ key: STORAGE_KEY, value }).catch(() => {});
     },
     removeItem: () => {
       cache = null;
-      Preferences.remove({ key: STORAGE_KEY });
+      if (hydrationFailed) return;
+      Preferences.remove({ key: STORAGE_KEY }).catch(() => {});
     },
   };
 }

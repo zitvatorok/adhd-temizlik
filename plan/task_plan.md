@@ -18,10 +18,20 @@ hazır Piling Up 1.0 (ayrıntı: docs/superpowers/plans/2026-07-12-appstore-ios-
 - [x] Task 6: Preferences kalıcılık adaptörü (869718c)
 - [x] Task 7: Capacitor iOS kabuğu + haptik/statusbar/splash (869718c)
 - [x] Task 8: Günlük hatırlatma bildirimi (869718c)
-- [ ] Task 9: İkon + splash + PWA görselleri — SVG kaynakları + script hazır,
-      PNG üretimi/manifest/favicon/commit kaldı
-- [ ] Task 10: Mağaza paketi (privacy, metadata, PrivacyInfo, README)
-- [ ] Task 11: Son doğrulama + code review
+- [x] Task 9: İkon + splash + PWA görselleri (0688bda) — 48px okunabilirlik OK
+- [x] Task 10: Mağaza paketi (297d41c) — privacy.html, metadata.md, PrivacyInfo
+      (pbxproj'a kayıtlı), ITSAppUsesNonExemptEncryption=false, README yeniden yazıldı
+- [x] Task 11: Son doğrulama + code review — üçlü kontrol yeşil, cap sync temiz,
+      JS ~84KB gzip (<350 hedef), 6'lı tarayıcı matrisi çekildi, bildirim şeması
+      plugin Swift kaynağından doğrulandı; reviewer bulgu 1-2 (storage hydration
+      guard + .catch) ve 8 (time parse guard) düzeltildi, version 1.0.0
+
+## 1.0.1 Backlog (reviewer bulguları, bloklamayan)
+- Bulgu 3: dil değişince zamanlanmış bildirim metni eski dilde kalıyor —
+  language değişiminde reminder.enabled ise syncReminder tekrar çağrılmalı
+- Bulgu 4: components.css 777 satır — concern bazında bölünebilir
+- Bulgu 5: taskCards.js'te ölü hardcoded TR kaynak etiketleri (satır 133-138)
+- Bulgu 6: --ink-mute açık temada ~3.16:1 kontrast (meta metin için AA altı)
 
 ## Decisions Made
 - Capacitor (rewrite değil): mevcut React kodu + web sürümü korunur.
@@ -38,5 +48,7 @@ hazır Piling Up 1.0 (ayrıntı: docs/superpowers/plans/2026-07-12-appstore-ios-
   viewport'u sayfa boyuna resize et (1440×4400 işe yaradı).
 
 ## Status
-**Task 9 devam ediyor** — 2026-07-12: disk açıldı (31GB boş), kullanıcı "devam" onayı verdi.
-Sıra: PNG üretimi → cap assets → manifest/favicon → Task 10 → Task 11.
+**Plan tamamlandı (2026-07-12)** — Task 0-11 bitti, RC 1.0.0 commit'lendi.
+Kalanlar kullanıcıda: Xcode ile cihaz testi + arşiv/upload, Vercel deploy,
+metadata'daki `<vercel-domain>` doldurma, mağaza ekran görüntüleri.
+1.0.1 backlog'u yukarıda.
