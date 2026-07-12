@@ -1,0 +1,15 @@
+{
+  "appId": "com.dilarayabul.pilingup",
+  "appName": "Piling Up",
+  "webDir": "dist",
+  "ios": {
+    "contentInset": "never"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "backgroundColor": "#F3EFE4",
+      "launchAutoHide": false,
+      "showSpinner": false
+    }
+  }
+}

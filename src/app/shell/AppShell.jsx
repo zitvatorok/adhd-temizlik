@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useAppState } from "./useAppState.js";
 import { I18nProvider } from "../i18n/index.jsx";
 import { Header } from "../components/Header.jsx";
@@ -9,8 +9,14 @@ import { RoutinesView } from "../views/RoutinesView.jsx";
 import { FocusView } from "../views/FocusView.jsx";
 import { DopamineView } from "../views/DopamineView.jsx";
 import { SettingsView } from "../views/SettingsView.jsx";
+import { hideSplash, syncStatusBar } from "../native/system.js";
+import { dayComplete } from "../native/haptics.js";
 
-function useThemeAttribute(theme) {
+function useNativeChrome(theme) {
+  useEffect(() => {
+    hideSplash();
+  }, []);
+
   useEffect(() => {
     const root = document.documentElement;
     if (theme === "light" || theme === "dark") {
@@ -18,14 +24,34 @@ function useThemeAttribute(theme) {
     } else {
       delete root.dataset.theme;
     }
+
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const apply = () => {
+      syncStatusBar(theme === "dark" || (theme !== "light" && media.matches));
+    };
+    apply();
+    media.addEventListener("change", apply);
+    return () => media.removeEventListener("change", apply);
   }, [theme]);
+}
+
+function useDayCompleteHaptic(dailyDone) {
+  const previous = useRef(dailyDone);
+
+  useEffect(() => {
+    if (previous.current < 3 && dailyDone >= 3) {
+      dayComplete();
+    }
+    previous.current = dailyDone;
+  }, [dailyDone]);
 }
 
 export default function AppShell() {
   const { state, stats, actions } = useAppState();
   const activeTab = state.ui.activeTab || "today";
 
-  useThemeAttribute(state.ui.theme);
+  useNativeChrome(state.ui.theme);
+  useDayCompleteHaptic(Math.min(stats.done, 3));
 
   return (
     <I18nProvider language={state.ui.language}>

@@ -8,6 +8,7 @@ import {
   persistState,
 } from "../../state.js";
 import { updateTaskByKey, withTaskStatus } from "../lib/taskCards.js";
+import { getStorageLike } from "../lib/storage.js";
 
 function useMidnightRollover(setState) {
   useEffect(() => {
@@ -42,12 +43,12 @@ function useMidnightRollover(setState) {
 }
 
 export function useAppState() {
-  const [state, setState] = useState(() => loadStoredState(window.localStorage, new Date()));
+  const [state, setState] = useState(() => loadStoredState(getStorageLike(), new Date()));
 
   useMidnightRollover(setState);
 
   useEffect(() => {
-    persistState(state, window.localStorage);
+    persistState(state, getStorageLike());
   }, [state]);
 
   const commit = useCallback((updater) => {
@@ -84,6 +85,9 @@ export function useAppState() {
       },
       setTheme(theme) {
         commit((current) => ({ ...current, ui: { ...current.ui, theme } }));
+      },
+      setReminder(reminder) {
+        commit((current) => ({ ...current, ui: { ...current.ui, reminder } }));
       },
       toggleRoomTask(roomId, taskId) {
         commit((current) => {

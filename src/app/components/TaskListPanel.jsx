@@ -1,5 +1,6 @@
 import { getTaskStatus, inferMinutes } from "../lib/taskCards.js";
 import { Stamp } from "./Stamp.jsx";
+import { stampTap } from "../native/haptics.js";
 import { useT } from "../i18n/useT.js";
 
 const LEVEL_CLASS = { light: "", medium: "is-mid", deep: "is-high" };
@@ -9,7 +10,14 @@ function TaskRow({ task, onToggle, titleFor }) {
   const status = getTaskStatus(task);
 
   return (
-    <button type="button" className={`row ${task.done ? "is-done" : ""}`} onClick={() => onToggle(task.id)}>
+    <button
+      type="button"
+      className={`row ${task.done ? "is-done" : ""}`}
+      onClick={() => {
+        if (!task.done) stampTap();
+        onToggle(task.id);
+      }}
+    >
       <Stamp status={status} taskId={task.id} />
       <span className="row-main">
         <span className="row-t">{titleFor(task)}</span>

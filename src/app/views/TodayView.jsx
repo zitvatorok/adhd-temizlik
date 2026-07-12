@@ -3,11 +3,16 @@ import { CARE_MODES, TAG_KEYS, TIME_OPTIONS, TODAY_MODES } from "../constants.js
 import { getTaskStatus, getTodayTasks, taskTranslationKey } from "../lib/taskCards.js";
 import { ChipRow, Seg } from "../components/ui.jsx";
 import { Stamp } from "../components/Stamp.jsx";
+import { stampTap } from "../native/haptics.js";
 import { useT } from "../i18n/useT.js";
 
 function PlanRow({ task, onStatusChange }) {
   const t = useT();
   const status = getTaskStatus(task);
+  const toggleDone = () => {
+    if (status !== "done") stampTap();
+    onStatusChange(task.key, status === "done" ? "todo" : "done");
+  };
   const visibleTag = task.tags.find((tag) => TAG_KEYS.includes(tag));
   const sourceLabel =
     task.source === "room" ? t.room(task.groupId, task.sourceLabel) : t(`source.${task.groupId}`);
@@ -17,7 +22,7 @@ function PlanRow({ task, onStatusChange }) {
       <Stamp
         status={status}
         taskId={task.id}
-        onClick={() => onStatusChange(task.key, status === "done" ? "todo" : "done")}
+        onClick={toggleDone}
         label={t.task(taskTranslationKey(task), task.title)}
       />
       <span className="row-main">
@@ -31,7 +36,7 @@ function PlanRow({ task, onStatusChange }) {
         <button
           type="button"
           className={`btn btn-sm ${status === "done" ? "btn-ghost" : "btn-primary"}`}
-          onClick={() => onStatusChange(task.key, status === "done" ? "todo" : "done")}
+          onClick={toggleDone}
         >
           {status === "done" ? t("btn.undo") : t("btn.done")}
         </button>

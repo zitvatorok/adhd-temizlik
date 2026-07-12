@@ -115,6 +115,10 @@ export const en = {
     "settings.theme.light": "Light",
     "settings.theme.dark": "Dark",
     "settings.back": "Back",
+    "settings.reminder": "Daily reminder",
+    "settings.reminderHint": "A gentle nudge at the time you pick.",
+    "reminder.title": "One of today's 3 steps?",
+    "reminder.body": "Got 5 minutes? Earn a little stamp.",
 
     "empty.level": "No tasks at this level.",
 

@@ -1,8 +1,18 @@
 import { ROOM_ORDER } from "../../data.js";
+import { isReminderSupported, syncReminder } from "../native/notifications.js";
 import { useT } from "../i18n/useT.js";
 
 export function SettingsView({ state, actions, stats }) {
   const t = useT();
+  const reminder = state.ui.reminder || { enabled: false, hour: 19, minute: 0 };
+
+  const applyReminder = async (next) => {
+    actions.setReminder(next);
+    const ok = await syncReminder(next, { title: t("reminder.title"), body: t("reminder.body") });
+    if (next.enabled && !ok) {
+      actions.setReminder({ ...next, enabled: false });
+    }
+  };
 
   return (
     <div className="view">
@@ -46,6 +56,34 @@ export function SettingsView({ state, actions, stats }) {
           ))}
         </select>
       </div>
+
+      {isReminderSupported() && (
+        <div className="set-panel">
+          <div className="set-row">
+            <h2>{t("settings.reminder")}</h2>
+            <label className="switch">
+              <input
+                type="checkbox"
+                checked={reminder.enabled}
+                onChange={(event) => applyReminder({ ...reminder, enabled: event.target.checked })}
+              />
+              <i aria-hidden="true" />
+            </label>
+          </div>
+          <p className="set-note">{t("settings.reminderHint")}</p>
+          {reminder.enabled && (
+            <input
+              type="time"
+              className="select"
+              value={`${String(reminder.hour).padStart(2, "0")}:${String(reminder.minute).padStart(2, "0")}`}
+              onChange={(event) => {
+                const [hour, minute] = event.target.value.split(":").map(Number);
+                applyReminder({ ...reminder, hour, minute });
+              }}
+            />
+          )}
+        </div>
+      )}
 
       <div className="set-panel">
         <h2>{t("settings.resetTitle")}</h2>

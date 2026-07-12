@@ -115,6 +115,10 @@ export const tr = {
     "settings.theme.light": "Açık",
     "settings.theme.dark": "Koyu",
     "settings.back": "Geri",
+    "settings.reminder": "Günlük hatırlatma",
+    "settings.reminderHint": "Seçtiğin saatte nazik bir dürtme.",
+    "reminder.title": "Bugünün 3 adımından biri?",
+    "reminder.body": "5 dakikan var mı? Küçük bir mühür at.",
 
     "empty.level": "Bu seviyede görev yok.",
 
