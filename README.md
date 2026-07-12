@@ -43,7 +43,7 @@ npx cap open ios       # Xcode'da App workspace'i acar
 ```
 
 Xcode'da: Signing & Capabilities → kendi Team'ini seç (bundle id
-`com.dilarayabul.pilingup`). Simülatörde çalıştır; gerçek cihazda haptik,
+`com.pilingup.app`). Simülatörde çalıştır; gerçek cihazda haptik,
 bildirim zamanlaması ve safe-area mutlaka test edilmeli — bunlar simülatör/web'de
 tam doğrulanamaz.
 

@@ -6,7 +6,7 @@ App Store Connect'e girilecek tüm metinler. TR birincil, EN ikincil lokalizasyo
 
 | Alan | Değer |
 |---|---|
-| Bundle ID | `com.dilarayabul.pilingup` |
+| Bundle ID | `com.pilingup.app` |
 | Ad (TR ve EN) | Piling Up |
 | Kategori | Productivity (Üretkenlik) |
 | İkincil kategori | Lifestyle (Yaşam Tarzı) — isteğe bağlı |
