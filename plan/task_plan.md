@@ -13,12 +13,13 @@ hazır Piling Up 1.0 (ayrıntı: docs/superpowers/plans/2026-07-12-appstore-ios-
 - [x] Task 2: App.jsx modülerleştirme (88a2c0a)
 - [x] Task 3: i18n TR/EN — EN'de UI + tüm görev/oda içerik çevirileri; oda görevleri
       "roomId:taskId" kapsamlı anahtarla (mutfak/çocuk k-closet-* çakışması)
-- [ ] Task 4: Tasarım sistemi tabanı (tokens/font/kabuk)
-- [ ] Task 5: Ekranlar (5a–5f)
-- [ ] Task 6: Preferences kalıcılık adaptörü
-- [ ] Task 7: Capacitor iOS kabuğu + haptik/statusbar/splash
-- [ ] Task 8: Günlük hatırlatma bildirimi
-- [ ] Task 9: İkon + splash + PWA görselleri
+- [x] Task 4: Tasarım sistemi tabanı (tokens/font/kabuk) (1074237)
+- [x] Task 5: Ekranlar (5a–5f) (1074237)
+- [x] Task 6: Preferences kalıcılık adaptörü (869718c)
+- [x] Task 7: Capacitor iOS kabuğu + haptik/statusbar/splash (869718c)
+- [x] Task 8: Günlük hatırlatma bildirimi (869718c)
+- [ ] Task 9: İkon + splash + PWA görselleri — SVG kaynakları + script hazır,
+      PNG üretimi/manifest/favicon/commit kaldı
 - [ ] Task 10: Mağaza paketi (privacy, metadata, PrivacyInfo, README)
 - [ ] Task 11: Son doğrulama + code review
 
@@ -37,4 +38,5 @@ hazır Piling Up 1.0 (ayrıntı: docs/superpowers/plans/2026-07-12-appstore-ios-
   viewport'u sayfa boyuna resize et (1440×4400 işe yaradı).
 
 ## Status
-**Faz C bitti** — Kullanıcıdan implementasyon başlangıç onayı ve yürütme modu bekleniyor.
+**Task 9 devam ediyor** — 2026-07-12: disk açıldı (31GB boş), kullanıcı "devam" onayı verdi.
+Sıra: PNG üretimi → cap assets → manifest/favicon → Task 10 → Task 11.

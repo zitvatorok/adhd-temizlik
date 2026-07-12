@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 .vercel
 .env*.local
+
+# scripts/render-assets.mjs uretir (kaynak: assets/*.svg)
+assets/*.png
