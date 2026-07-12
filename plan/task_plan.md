@@ -49,6 +49,8 @@ hazır Piling Up 1.0 (ayrıntı: docs/superpowers/plans/2026-07-12-appstore-ios-
 
 ## Status
 **Plan tamamlandı (2026-07-12)** — Task 0-11 bitti, RC 1.0.0 commit'lendi.
+Bundle id `com.pilingup.app` (5aacdbd); dal push'landı, PR açık:
+https://github.com/zitvatorok/adhd-temizlik/pull/1
 Kalanlar kullanıcıda: Xcode ile cihaz testi + arşiv/upload, Vercel deploy,
 metadata'daki `<vercel-domain>` doldurma, mağaza ekran görüntüleri.
 1.0.1 backlog'u yukarıda.
