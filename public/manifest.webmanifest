@@ -3,8 +3,8 @@
   "short_name": "Piling Up",
   "start_url": ".",
   "display": "standalone",
-  "background_color": "#edf1f5",
-  "theme_color": "#edf1f5",
+  "background_color": "#F3EFE4",
+  "theme_color": "#F3EFE4",
   "icons": [
     {
       "src": "/icons/icon-192.png",

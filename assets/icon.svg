@@ -1,0 +1,12 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <!-- Piling Up uygulama ikonu: yığılan kâğıtlar + kil mühür (onaylı mockup kompozisyonu) -->
+  <rect width="1024" height="1024" fill="#F3EFE4"/>
+  <g transform="rotate(-4 512 569)">
+    <rect x="246" y="531" width="531" height="322" rx="57" fill="#1F4130"/>
+    <rect x="228" y="417" width="569" height="322" rx="57" fill="#2E5D45"/>
+    <rect x="209" y="284" width="607" height="341" rx="57" fill="#FCFAF3" stroke="#DED5C1" stroke-width="10"/>
+    <path d="M303 398h322M303 474h228" stroke="#C9BFA6" stroke-width="28" stroke-linecap="round"/>
+  </g>
+  <rect x="626" y="228" width="209" height="209" rx="66" fill="#BC5C2B" transform="rotate(9 730 332)"/>
+  <path d="M683 337l32 32 66-70" fill="none" stroke="#FBF3EA" stroke-width="30" stroke-linecap="round" stroke-linejoin="round" transform="rotate(9 730 332)"/>
+</svg>

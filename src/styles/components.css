@@ -1,0 +1,777 @@
+/* Bileşen stilleri — sınıf adları ve ölçüler docs/design/mockup.html'den. */
+
+/* ---------- kabuk ---------- */
+.shell {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.shell-main {
+  flex: 1;
+  padding: 0 20px calc(104px + var(--sab));
+}
+
+.view {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  padding-top: 8px;
+}
+
+/* ---------- başlık ---------- */
+.hdr {
+  padding: calc(12px + var(--sat)) 20px 0;
+}
+
+.hdr-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 32px;
+}
+
+.hdr-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  color: var(--ink-mute);
+}
+
+.hdr-btn {
+  width: 38px;
+  height: 38px;
+  margin-right: -9px;
+  display: grid;
+  place-items: center;
+  color: var(--ink-mute);
+  border-radius: 50%;
+  transition: background var(--dur-1) var(--ease-out), color var(--dur-1) var(--ease-out);
+}
+
+.hdr-btn:active {
+  background: var(--inset);
+  color: var(--ink-soft);
+}
+
+.hdr-back {
+  margin-right: 0;
+  margin-left: -9px;
+}
+
+.hdr-main {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 2px;
+}
+
+.hdr-title {
+  font-family: "Fraunces", Georgia, serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-size: 34px;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+
+.hdr-sub {
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin-top: 8px;
+}
+
+.hdr-meta {
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+  padding-bottom: 5px;
+}
+
+/* Yığın sayacı */
+.pile-wrap {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding-bottom: 5px;
+}
+
+.pile {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 3px;
+  align-items: flex-end;
+}
+
+.pile i {
+  display: block;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--moss);
+  transition: background var(--dur-2) var(--ease-out);
+}
+
+.pile i.is-empty {
+  background: transparent;
+  border: 1px solid var(--line-2);
+}
+
+.pile-count {
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- segment / çip / oda hapları ---------- */
+.seg {
+  display: flex;
+  background: var(--inset);
+  border-radius: 12px;
+  padding: 3px;
+}
+
+.seg button {
+  flex: 1;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 0;
+  border-radius: 9px;
+  color: var(--ink-mute);
+  transition: background var(--dur-1) var(--ease-out), color var(--dur-1) var(--ease-out);
+}
+
+.seg button.is-active {
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 1px 3px rgba(30, 24, 12, 0.14);
+}
+
+.chiprow {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  margin: 0 -20px;
+  padding: 2px 20px;
+  scrollbar-width: none;
+}
+
+.chiprow::-webkit-scrollbar {
+  display: none;
+}
+
+.chiprow button {
+  flex: none;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  color: var(--ink-soft);
+  white-space: nowrap;
+  transition: background var(--dur-1) var(--ease-out), color var(--dur-1) var(--ease-out),
+    border-color var(--dur-1) var(--ease-out);
+}
+
+.chiprow button.is-active {
+  background: var(--moss);
+  border-color: var(--moss);
+  color: var(--on-moss);
+}
+
+.field-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  color: var(--ink-mute);
+  margin-top: 4px;
+}
+
+/* ---------- panel ve satırlar ---------- */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-panel);
+  padding: 15px 16px 5px;
+  box-shadow: var(--shadow-panel);
+}
+
+.panel-h {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 11px;
+}
+
+.panel-h b {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+}
+
+.panel-h span {
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--ink-mute);
+  font-variant-numeric: tabular-nums;
+}
+
+.bar {
+  height: 3px;
+  border-radius: 2px;
+  background: var(--inset);
+  margin-bottom: 4px;
+  overflow: hidden;
+}
+
+.bar i {
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--moss);
+  transition: width var(--dur-2) var(--ease-out);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  padding: 13px 2px;
+  border-top: 1px dotted var(--line-2);
+}
+
+.row:first-of-type {
+  border-top: none;
+}
+
+.row-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.row-t {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  line-height: 1.3;
+}
+
+.row.is-done .row-t {
+  color: var(--ink-mute);
+  text-decoration: line-through;
+  text-decoration-color: var(--line-2);
+  text-decoration-thickness: 1.5px;
+}
+
+.row-m {
+  font-size: 11.5px;
+  color: var(--ink-mute);
+  margin-top: 2px;
+}
+
+.row-m b {
+  font-weight: 650;
+  color: var(--ink-soft);
+}
+
+.row-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+/* ---------- mühür ---------- */
+.stamp {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.6px dashed var(--line-2);
+  display: grid;
+  place-items: center;
+  color: transparent;
+  transition: border-color var(--dur-1) var(--ease-out);
+}
+
+.stamp.is-started {
+  border-style: solid;
+  border-color: var(--moss);
+  position: relative;
+}
+
+.stamp.is-started::after {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  background: var(--moss);
+}
+
+.stamp.is-paused {
+  border-style: solid;
+  border-color: var(--line-2);
+  position: relative;
+}
+
+.stamp.is-paused::after {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  border: 1.6px solid var(--ink-mute);
+}
+
+.stamp.is-done {
+  border: none;
+  border-radius: 9px;
+  background: var(--clay);
+  color: var(--on-clay);
+  transform: rotate(var(--stamp-rot, -7deg));
+  box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.12);
+  animation: stamp-in var(--dur-2) var(--ease-spring);
+}
+
+@keyframes stamp-in {
+  from {
+    transform: scale(0.55) rotate(calc(var(--stamp-rot, -7deg) - 10deg));
+  }
+  60% {
+    transform: scale(1.1) rotate(var(--stamp-rot, -7deg));
+  }
+  to {
+    transform: scale(1) rotate(var(--stamp-rot, -7deg));
+  }
+}
+
+.mini-stamps {
+  display: flex;
+  gap: 6px;
+}
+
+.mini-stamps i {
+  width: 16px;
+  height: 16px;
+  border-radius: 5px;
+  background: var(--clay);
+  display: block;
+}
+
+.mini-stamps i:nth-child(4n + 1) { transform: rotate(-9deg); }
+.mini-stamps i:nth-child(4n + 2) { transform: rotate(6deg); opacity: 0.92; }
+.mini-stamps i:nth-child(4n + 3) { transform: rotate(-4deg); opacity: 0.86; }
+.mini-stamps i:nth-child(4n + 4) { transform: rotate(10deg); opacity: 0.8; }
+
+/* ---------- seviye etiketi ---------- */
+.lvl {
+  flex: none;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--moss-soft);
+  color: var(--moss-deep);
+}
+
+.lvl.is-mid {
+  background: var(--clay-soft);
+  color: var(--clay);
+}
+
+.lvl.is-high {
+  background: var(--inset);
+  color: var(--ink-soft);
+}
+
+/* ---------- butonlar ---------- */
+.btn {
+  border-radius: 999px;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: transform var(--dur-1) var(--ease-out), opacity var(--dur-1) var(--ease-out);
+}
+
+.btn:active {
+  transform: scale(0.96);
+}
+
+.btn-sm {
+  font-size: 12.5px;
+  padding: 8px 15px;
+}
+
+.btn-lg {
+  font-size: 14.5px;
+  padding: 13px 26px;
+}
+
+.btn-primary {
+  background: var(--moss);
+  color: var(--on-moss);
+}
+
+.btn-ghost {
+  border: 1px solid var(--line-2);
+  color: var(--ink-soft);
+  font-weight: 650;
+}
+
+.btn-clay {
+  background: var(--clay);
+  color: var(--on-clay);
+}
+
+.btn-danger {
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  font-weight: 650;
+}
+
+/* ---------- oda hapları ---------- */
+.roompills {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  margin: 0 -20px;
+  padding: 2px 20px;
+  scrollbar-width: none;
+}
+
+.roompills::-webkit-scrollbar {
+  display: none;
+}
+
+.roompills button {
+  flex: none;
+  font-size: 13px;
+  font-weight: 650;
+  padding: 9px 16px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink-soft);
+  white-space: nowrap;
+  transition: background var(--dur-1) var(--ease-out), color var(--dur-1) var(--ease-out),
+    border-color var(--dur-1) var(--ease-out);
+}
+
+.roompills button.is-active {
+  background: var(--moss);
+  border-color: var(--moss);
+  color: var(--on-moss);
+}
+
+/* ---------- sekme çubuğu ---------- */
+.tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  padding: 8px 10px calc(8px + var(--sab));
+}
+
+.tabbar-inner {
+  display: flex;
+  width: 100%;
+  max-width: 460px;
+}
+
+.tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  color: var(--ink-mute);
+  padding: 4px 0 2px;
+  transition: color var(--dur-1) var(--ease-out);
+}
+
+.tab.is-active {
+  color: var(--moss);
+}
+
+.tab span {
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+}
+
+/* ---------- odak ekranı ---------- */
+.focus-stage {
+  min-height: 48dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px 8px 8px;
+}
+
+.phase-pill {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--moss-deep);
+  background: var(--moss-soft);
+  padding: 6px 14px;
+  border-radius: 999px;
+}
+
+.timer {
+  font-family: "Fraunces", Georgia, serif;
+  font-variation-settings: "opsz" 144;
+  font-weight: 470;
+  font-size: clamp(76px, 24vw, 96px);
+  line-height: 1.05;
+  letter-spacing: 0.005em;
+  font-variant-numeric: tabular-nums;
+  margin: 14px 0 6px;
+}
+
+.focus-bound {
+  font-size: 13px;
+  color: var(--ink-soft);
+  max-width: 32ch;
+}
+
+.focus-bar {
+  width: 190px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--inset);
+  margin: 24px auto 0;
+  overflow: hidden;
+}
+
+.focus-bar i {
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--moss);
+  transition: width 1s linear;
+}
+
+.focus-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 28px;
+}
+
+/* ---------- dopamin ekranı ---------- */
+.dopa-stage {
+  min-height: 44dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 24px 6px 8px;
+}
+
+.dopa-kicker {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  color: var(--clay);
+}
+
+.dopa-task {
+  font-family: "Fraunces", Georgia, serif;
+  font-style: italic;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-size: 30px;
+  line-height: 1.2;
+  letter-spacing: -0.005em;
+  margin: 12px 0 8px;
+  text-wrap: balance;
+}
+
+.dopa-meta {
+  font-size: 13px;
+  color: var(--ink-mute);
+}
+
+.dopa-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+.dopa-hist {
+  margin-top: 40px;
+  padding-top: 16px;
+  border-top: 1px dotted var(--line-2);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dopa-hist span {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+/* ---------- ayarlar ---------- */
+.set-panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-panel);
+  padding: 16px;
+  box-shadow: var(--shadow-panel);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.set-panel h2 {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.set-panel p {
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.set-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.set-note {
+  font-size: 11.5px;
+  color: var(--ink-mute);
+}
+
+.select {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  background-color: var(--surface);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%238D8678' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  border: 1px solid var(--line);
+  border-radius: var(--r-field);
+  padding: 12px 40px 12px 14px;
+  font-size: 15px;
+  color: var(--ink);
+}
+
+.link {
+  color: var(--moss);
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.switch {
+  position: relative;
+  flex: none;
+  width: 50px;
+  height: 30px;
+}
+
+.switch input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.switch i {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: var(--inset);
+  transition: background var(--dur-2) var(--ease-out);
+  pointer-events: none;
+}
+
+.switch i::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: transform var(--dur-2) var(--ease-out);
+}
+
+.switch input:checked + i {
+  background: var(--moss);
+}
+
+.switch input:checked + i::after {
+  transform: translateX(20px);
+}
+
+/* ---------- geçmiş ---------- */
+.hist-row {
+  display: grid;
+  grid-template-columns: 52px 1fr 44px;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 2px;
+  border-top: 1px dotted var(--line-2);
+}
+
+.hist-row:first-of-type {
+  border-top: none;
+}
+
+.hist-row > span {
+  font-size: 12px;
+  color: var(--ink-mute);
+}
+
+.hist-row > div {
+  height: 3px;
+  border-radius: 2px;
+  background: var(--inset);
+  overflow: hidden;
+}
+
+.hist-row > div i {
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--moss);
+}
+
+.hist-row > strong {
+  font-size: 12.5px;
+  font-weight: 650;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- boş durum ---------- */
+.empty-state {
+  padding: 22px 8px 26px;
+  text-align: center;
+  font-size: 13.5px;
+  color: var(--ink-mute);
+}
