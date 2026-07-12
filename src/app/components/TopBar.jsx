@@ -1,18 +1,16 @@
+import { useT } from "../i18n/useT.js";
+
 function ProgressRing({ value }) {
   return (
-    <div
-      className="progress-ring"
-      style={{ "--progress": `${value}%` }}
-      role="img"
-      aria-label={`İlerleme ${value}%`}
-    >
+    <div className="progress-ring" style={{ "--progress": `${value}%` }} role="img" aria-label={`${value}%`}>
       <span>{value}</span>
     </div>
   );
 }
 
 export function TopBar({ stats }) {
-  const today = new Date().toLocaleDateString("tr-TR", {
+  const t = useT();
+  const today = new Date().toLocaleDateString(t.locale, {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -23,23 +21,23 @@ export function TopBar({ stats }) {
   return (
     <header className="top-bar">
       <div className="top-copy">
-        <p className="app-kicker">Bugün</p>
+        <p className="app-kicker">{t("topbar.kicker")}</p>
         <p className="eyebrow">{today}</p>
         <h1>Piling Up</h1>
-        <p className="top-note">Küçük adımlar, gerçek ilerleme.</p>
+        <p className="top-note">{t("topbar.note")}</p>
       </div>
 
-      <div className="summary-strip" aria-label="Bugünkü ilerleme">
+      <div className="summary-strip">
         <ProgressRing value={dailyProgress} />
         <div className="summary-copy">
           <strong>
             {dailyDone}/3
           </strong>
-          <span>bugünün küçük adımı</span>
+          <span>{t("topbar.step")}</span>
         </div>
         <div className="summary-copy hide-small">
           <strong>00:00</strong>
-          <span>temiz sayfa</span>
+          <span>{t("topbar.clean")}</span>
         </div>
       </div>
     </header>

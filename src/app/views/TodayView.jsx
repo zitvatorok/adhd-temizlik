@@ -1,13 +1,17 @@
 import { useMemo } from "react";
-import { CARE_MODES, STATUS_LABELS, TAG_LABELS, TIME_OPTIONS, TODAY_MODES } from "../constants.js";
-import { getTaskStatus, getTodayTasks } from "../lib/taskCards.js";
+import { CARE_MODES, TAG_KEYS, TIME_OPTIONS, TODAY_MODES } from "../constants.js";
+import { getTaskStatus, getTodayTasks, taskTranslationKey } from "../lib/taskCards.js";
 import { ChoiceRow, SectionHeader } from "../components/ui.jsx";
+import { useT } from "../i18n/useT.js";
 
 function PlanTaskCard({ task, onStatusChange }) {
+  const t = useT();
   const status = getTaskStatus(task);
   const visibleTags = task.tags
-    .filter((tag, index, all) => TAG_LABELS[tag] && all.indexOf(tag) === index)
+    .filter((tag, index, all) => TAG_KEYS.includes(tag) && all.indexOf(tag) === index)
     .slice(0, 2);
+  const sourceLabel =
+    task.source === "room" ? t.room(task.groupId, task.sourceLabel) : t(`source.${task.groupId}`);
 
   return (
     <article className={`plan-task-card is-${status}`}>
@@ -17,14 +21,14 @@ function PlanTaskCard({ task, onStatusChange }) {
         </span>
         <div>
           <div className="plan-task-title-row">
-            <h3>{task.title}</h3>
-            <span>{STATUS_LABELS[status]}</span>
+            <h3>{t.task(taskTranslationKey(task), task.title)}</h3>
+            <span>{t(`status.${status}`)}</span>
           </div>
           <div className="plan-task-meta">
-            <span>{task.sourceLabel}</span>
-            <span>{task.minutes} dk</span>
+            <span>{sourceLabel}</span>
+            <span>{t("minutes", { n: task.minutes })}</span>
             {visibleTags.map((tag) => (
-              <span key={tag}>{TAG_LABELS[tag]}</span>
+              <span key={tag}>{t(`tag.${tag}`)}</span>
             ))}
           </div>
         </div>
@@ -33,17 +37,17 @@ function PlanTaskCard({ task, onStatusChange }) {
       <div className="plan-actions">
         {status === "todo" && (
           <button type="button" className="secondary-action" onClick={() => onStatusChange(task.key, "started")}>
-            Başladım
+            {t("btn.start")}
           </button>
         )}
         {status === "started" && (
           <button type="button" className="secondary-action" onClick={() => onStatusChange(task.key, "paused")}>
-            Yarım kaldı
+            {t("btn.paused")}
           </button>
         )}
         {status === "paused" && (
           <button type="button" className="secondary-action" onClick={() => onStatusChange(task.key, "started")}>
-            Kaldığım yer
+            {t("btn.resume")}
           </button>
         )}
         <button
@@ -51,7 +55,7 @@ function PlanTaskCard({ task, onStatusChange }) {
           className={status === "done" ? "secondary-action" : "primary-action"}
           onClick={() => onStatusChange(task.key, status === "done" ? "todo" : "done")}
         >
-          {status === "done" ? "Geri al" : "Bitti"}
+          {status === "done" ? t("btn.undo") : t("btn.done")}
         </button>
       </div>
     </article>
@@ -59,13 +63,14 @@ function PlanTaskCard({ task, onStatusChange }) {
 }
 
 function TodayTaskPanel({ mode, tasks, onStatusChange }) {
+  const t = useT();
   const doneCount = tasks.filter((task) => task.done).length;
 
   return (
     <div className="today-task-panel">
       <div className="task-panel-header">
         <div>
-          <h2>{mode === "daily" ? "Sıradaki yapılabilirler" : "Şimdilik yeterli liste"}</h2>
+          <h2>{mode === "daily" ? t("today.listDaily") : t("today.listOther")}</h2>
           <span>
             {doneCount}/{tasks.length}
           </span>
@@ -85,16 +90,17 @@ function TodayTaskPanel({ mode, tasks, onStatusChange }) {
 }
 
 export function TodayView({ state, actions }) {
+  const t = useT();
   const tasks = useMemo(() => getTodayTasks(state), [state]);
   const todayMode = state.ui.todayMode || "daily";
   const title =
-    todayMode === "crisis" ? "Kriz modu" : todayMode === "kid" ? "Çocukla birlikte" : "Bugünün 3 adımı";
+    todayMode === "crisis" ? t("today.titleCrisis") : todayMode === "kid" ? t("today.titleKid") : t("today.title3");
   const meta =
     todayMode === "crisis"
-      ? "önce güvenli alan"
+      ? t("today.metaCrisis")
       : todayMode === "kid"
-        ? "oyun gibi toparlama"
-        : `${state.ui.timeBudget || "5"} dk · ${CARE_MODES.find((mode) => mode.value === state.ui.careMode)?.label || "Normal"}`;
+        ? t("today.metaKid")
+        : `${t(`time.${state.ui.timeBudget || "5"}`)} · ${t(`care.${state.ui.careMode || "normal"}`)}`;
 
   return (
     <section className="page-section">
@@ -102,28 +108,28 @@ export function TodayView({ state, actions }) {
 
       <div className="today-panel">
         <div className="today-copy">
-          <p className="quick-kicker">Şu anki hedef</p>
-          <h2>Bir sonraki küçük şey</h2>
-          <p>Bütün evi değil, sadece akışı toparlıyoruz.</p>
+          <p className="quick-kicker">{t("today.kicker")}</p>
+          <h2>{t("today.next")}</h2>
+          <p>{t("today.sub")}</p>
         </div>
 
         <ChoiceRow
-          label="Zaman"
+          label={t("today.time")}
           value={state.ui.timeBudget || "5"}
           onChange={actions.setTimeBudget}
-          options={TIME_OPTIONS}
+          options={TIME_OPTIONS.map((value) => ({ value, label: t(`time.${value}`) }))}
         />
         <ChoiceRow
-          label="Durum"
+          label={t("today.situation")}
           value={state.ui.careMode || "normal"}
           onChange={actions.setCareMode}
-          options={CARE_MODES}
+          options={CARE_MODES.map((value) => ({ value, label: t(`care.${value}`) }))}
         />
         <ChoiceRow
-          label="Mod"
+          label={t("today.mode")}
           value={todayMode}
           onChange={actions.setTodayMode}
-          options={TODAY_MODES}
+          options={TODAY_MODES.map((value) => ({ value, label: t(`mode.${value}`) }))}
         />
       </div>
 

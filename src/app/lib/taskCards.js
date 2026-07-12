@@ -1,7 +1,12 @@
 import { QUICK_TASKS } from "../../data.js";
 
-export function getRandomQuickTask() {
-  return QUICK_TASKS[Math.floor(Math.random() * QUICK_TASKS.length)];
+export function getRandomQuickIndex() {
+  return Math.floor(Math.random() * QUICK_TASKS.length);
+}
+
+/** Translation lookup key: room tasks are scoped because kitchen and kids share ids. */
+export function taskTranslationKey(card) {
+  return card.source === "room" ? `${card.groupId}:${card.id}` : card.id;
 }
 
 export function getTaskStatus(task) {

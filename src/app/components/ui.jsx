@@ -1,5 +1,6 @@
 import { LEVELS } from "../constants.js";
 import { ROOM_ORDER } from "../../data.js";
+import { useT } from "../i18n/useT.js";
 
 export function SectionHeader({ title, meta }) {
   return (
@@ -48,8 +49,10 @@ export function SegmentedControl({ value, onChange, options }) {
 }
 
 export function RoomPicker({ rooms, selectedRoomId, onSelect }) {
+  const t = useT();
+
   return (
-    <div className="pill-row" aria-label="Odalar">
+    <div className="pill-row" aria-label={t("rooms.title")}>
       {ROOM_ORDER.map((roomId) => {
         const room = rooms[roomId];
         if (!room) return null;
@@ -60,7 +63,7 @@ export function RoomPicker({ rooms, selectedRoomId, onSelect }) {
             onClick={() => onSelect(roomId)}
             key={roomId}
           >
-            {room.name}
+            {t.room(roomId, room.name)}
           </button>
         );
       })}
@@ -69,8 +72,10 @@ export function RoomPicker({ rooms, selectedRoomId, onSelect }) {
 }
 
 export function LevelFilter({ value, onChange }) {
+  const t = useT();
+
   return (
-    <div className="level-row" aria-label="Enerji seviyesi">
+    <div className="level-row">
       {LEVELS.map((level) => (
         <button
           type="button"
@@ -79,7 +84,7 @@ export function LevelFilter({ value, onChange }) {
           key={level.id}
         >
           <span aria-hidden="true" />
-          {level.label}
+          {t(`levels.${level.id}`)}
         </button>
       ))}
     </div>

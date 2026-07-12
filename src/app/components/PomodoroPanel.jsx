@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
+import { useT } from "../i18n/useT.js";
 
 export function PomodoroPanel({ selectedTask }) {
+  const t = useT();
   const [phase, setPhase] = useState("focus");
   const [remaining, setRemaining] = useState(25 * 60);
   const [running, setRunning] = useState(false);
@@ -32,7 +34,9 @@ export function PomodoroPanel({ selectedTask }) {
   return (
     <div className="pomodoro-panel">
       <div className="pomodoro-meta">
-        <span className={`phase-badge phase-${phase}`}>{phase === "focus" ? "Odak" : "Mola"}</span>
+        <span className={`phase-badge phase-${phase}`}>
+          {phase === "focus" ? t("focus.phaseFocus") : t("focus.phaseBreak")}
+        </span>
         {selectedTask && <span className="bound-task">{selectedTask}</span>}
       </div>
       <div className="pomodoro-time">
@@ -40,10 +44,10 @@ export function PomodoroPanel({ selectedTask }) {
       </div>
       <div className="pomodoro-actions">
         <button type="button" className="primary-action" onClick={() => setRunning((value) => !value)}>
-          {running ? "Duraklat" : "Başlat"}
+          {running ? t("focus.pause") : t("focus.start")}
         </button>
         <button type="button" className="secondary-action" onClick={reset}>
-          Sıfırla
+          {t("focus.reset")}
         </button>
       </div>
     </div>

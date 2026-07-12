@@ -79,6 +79,9 @@ export function useAppState() {
       setEnergy(energy) {
         commit((current) => ({ ...current, ui: { ...current.ui, energy } }));
       },
+      setLanguage(language) {
+        commit((current) => ({ ...current, ui: { ...current.ui, language } }));
+      },
       toggleRoomTask(roomId, taskId) {
         commit((current) => {
           const room = current.rooms[roomId];

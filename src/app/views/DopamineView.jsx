@@ -1,35 +1,38 @@
 import { useState } from "react";
+import { QUICK_TASKS } from "../../data.js";
 import { getTaskStats } from "../../state.js";
-import { getRandomQuickTask } from "../lib/taskCards.js";
+import { getRandomQuickIndex } from "../lib/taskCards.js";
 import { SectionHeader } from "../components/ui.jsx";
+import { useT } from "../i18n/useT.js";
 
 export function DopamineView({ state }) {
-  const [task, setTask] = useState(() => getRandomQuickTask());
+  const t = useT();
+  const [taskIndex, setTaskIndex] = useState(() => getRandomQuickIndex());
   const [doneCount, setDoneCount] = useState(0);
   const dailyStats = getTaskStats(state);
 
   return (
     <section className="page-section">
-      <SectionHeader title="Dopamin" meta={`${dailyStats.done} tamamlandı`} />
+      <SectionHeader title={t("quick.title")} meta={t("quick.metaDone", { n: dailyStats.done })} />
       <div className="quick-panel">
-        <p className="quick-kicker">5 dakikalık görev</p>
-        <h2>{task}</h2>
+        <p className="quick-kicker">{t("quick.kicker")}</p>
+        <h2>{t.quick(taskIndex, QUICK_TASKS[taskIndex])}</h2>
         <div className="quick-actions">
           <button
             type="button"
             className="primary-action"
             onClick={() => {
               setDoneCount((count) => count + 1);
-              setTask(getRandomQuickTask());
+              setTaskIndex(getRandomQuickIndex());
             }}
           >
-            Bitirdim
+            {t("quick.done")}
           </button>
-          <button type="button" className="secondary-action" onClick={() => setTask(getRandomQuickTask())}>
-            Değiştir
+          <button type="button" className="secondary-action" onClick={() => setTaskIndex(getRandomQuickIndex())}>
+            {t("quick.change")}
           </button>
         </div>
-        <p className="quick-count">{doneCount} kısa görev</p>
+        <p className="quick-count">{t("quick.count", { n: doneCount })}</p>
       </div>
     </section>
   );
