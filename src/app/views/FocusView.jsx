@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { SectionHeader } from "../components/ui.jsx";
 import { PomodoroPanel } from "../components/PomodoroPanel.jsx";
 import { useT } from "../i18n/useT.js";
 
@@ -32,15 +31,14 @@ export function FocusView({ state, actions }) {
   );
 
   return (
-    <section className="page-section">
-      <SectionHeader title={t("focus.title")} meta={selectedTask ? t("focus.bound") : t("focus.free")} />
+    <div className="view">
       <PomodoroPanel selectedTask={selectedTask?.label} />
-      <label className="select-label" htmlFor="task-binding">
-        {t("focus.task")}
+      <label className="field-label" htmlFor="task-binding">
+        {t("focus.task").toLocaleUpperCase(t.locale)}
       </label>
       <select
         id="task-binding"
-        className="select-input"
+        className="select"
         value={selectedTask?.id || ""}
         onChange={(event) => actions.bindPomodoroToTask(event.target.value)}
       >
@@ -51,6 +49,6 @@ export function FocusView({ state, actions }) {
           </option>
         ))}
       </select>
-    </section>
+    </div>
   );
 }

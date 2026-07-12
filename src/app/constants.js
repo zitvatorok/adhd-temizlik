@@ -1,12 +1,3 @@
-export const TABS = [
-  { id: "today", icon: "◌" },
-  { id: "rooms", icon: "⌂" },
-  { id: "routines", icon: "✓" },
-  { id: "focus", icon: "◷" },
-  { id: "quick", icon: "✦" },
-  { id: "settings", icon: "⚙" },
-];
-
 export const LEVELS = [
   { id: "light", tone: "low" },
   { id: "medium", tone: "mid" },

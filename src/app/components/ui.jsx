@@ -1,39 +1,9 @@
-import { LEVELS } from "../constants.js";
 import { ROOM_ORDER } from "../../data.js";
 import { useT } from "../i18n/useT.js";
 
-export function SectionHeader({ title, meta }) {
+export function Seg({ value, onChange, options }) {
   return (
-    <div className="section-header">
-      <h2>{title}</h2>
-      <span>{meta}</span>
-    </div>
-  );
-}
-
-export function ChoiceRow({ label, value, onChange, options }) {
-  return (
-    <div className="choice-row">
-      <span>{label}</span>
-      <div>
-        {options.map((option) => (
-          <button
-            type="button"
-            className={value === option.value ? "is-active" : ""}
-            onClick={() => onChange(option.value)}
-            key={option.value}
-          >
-            {option.label}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-export function SegmentedControl({ value, onChange, options }) {
-  return (
-    <div className="segmented-control">
+    <div className="seg">
       {options.map((option) => (
         <button
           type="button"
@@ -48,18 +18,35 @@ export function SegmentedControl({ value, onChange, options }) {
   );
 }
 
-export function RoomPicker({ rooms, selectedRoomId, onSelect }) {
+export function ChipRow({ value, onChange, options }) {
+  return (
+    <div className="chiprow">
+      {options.map((option) => (
+        <button
+          type="button"
+          className={value === option.value ? "is-active" : ""}
+          onClick={() => onChange(option.value)}
+          key={option.value}
+        >
+          {option.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+export function RoomPills({ rooms, selectedRoomId, onSelect }) {
   const t = useT();
 
   return (
-    <div className="pill-row" aria-label={t("rooms.title")}>
+    <div className="roompills">
       {ROOM_ORDER.map((roomId) => {
         const room = rooms[roomId];
         if (!room) return null;
         return (
           <button
             type="button"
-            className={`pill-button ${selectedRoomId === roomId ? "is-active" : ""}`}
+            className={selectedRoomId === roomId ? "is-active" : ""}
             onClick={() => onSelect(roomId)}
             key={roomId}
           >
@@ -67,26 +54,6 @@ export function RoomPicker({ rooms, selectedRoomId, onSelect }) {
           </button>
         );
       })}
-    </div>
-  );
-}
-
-export function LevelFilter({ value, onChange }) {
-  const t = useT();
-
-  return (
-    <div className="level-row">
-      {LEVELS.map((level) => (
-        <button
-          type="button"
-          className={`level-button tone-${level.tone} ${value === level.id ? "is-active" : ""}`}
-          onClick={() => onChange(level.id)}
-          key={level.id}
-        >
-          <span aria-hidden="true" />
-          {t(`levels.${level.id}`)}
-        </button>
-      ))}
     </div>
   );
 }

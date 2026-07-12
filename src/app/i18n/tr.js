@@ -67,6 +67,11 @@ export const tr = {
     "source.kid": "Çocukla",
 
     "rooms.title": "Odalar",
+    "rooms.eyebrow": "ODA ODA, TEK SEFERDE BİR RAF",
+    "routines.eyebrow": "KÜÇÜK TEKRARLAR, BÜYÜK FARK",
+    "focus.eyebrow": "ODAK · TEK İŞ, TEK SÜRE",
+    "quick.eyebrow": "DOPAMİN · KISA GÖREV",
+    "settings.eyebrow": "PILING UP 1.0",
 
     "routines.title": "Rutinler",
     "routines.daily": "Günlük",
@@ -87,11 +92,11 @@ export const tr = {
     "focus.timeOnly": "Sadece süre",
 
     "quick.title": "Dopamin",
-    "quick.metaDone": "{n} tamamlandı",
-    "quick.kicker": "5 dakikalık görev",
+    "quick.roll": "ZAR ATILDI",
+    "quick.meta": "≈ 5 dakika · düşünme, başla",
     "quick.done": "Bitirdim",
     "quick.change": "Değiştir",
-    "quick.count": "{n} kısa görev",
+    "quick.count": "bugün {n} kısa görev mühürlendi",
 
     "settings.title": "Ayarlar",
     "settings.meta": "Yerel kayıt",
@@ -105,6 +110,11 @@ export const tr = {
     "settings.lang.system": "Sistem dili",
     "settings.lang.tr": "Türkçe",
     "settings.lang.en": "English",
+    "settings.theme": "Tema",
+    "settings.theme.system": "Sistem",
+    "settings.theme.light": "Açık",
+    "settings.theme.dark": "Koyu",
+    "settings.back": "Geri",
 
     "empty.level": "Bu seviyede görev yok.",
 

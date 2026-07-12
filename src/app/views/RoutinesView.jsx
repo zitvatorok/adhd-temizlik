@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { LevelFilter, SectionHeader, SegmentedControl } from "../components/ui.jsx";
+import { LEVELS } from "../constants.js";
+import { Seg } from "../components/ui.jsx";
 import { TaskList } from "../components/TaskListPanel.jsx";
 import { useT } from "../i18n/useT.js";
 
@@ -12,23 +13,21 @@ function ProgressHistory({ progress }) {
   }
 
   return (
-    <div className="history-panel">
-      <div className="history-header">
-        <h2>{t("routines.history")}</h2>
+    <div className="panel">
+      <div className="panel-h">
+        <b>{t("routines.history")}</b>
       </div>
-      <div className="history-list">
-        {lastSeven.map((entry) => (
-          <div className="history-row" key={entry.date}>
-            <span>
-              {new Date(`${entry.date}T12:00:00`).toLocaleDateString(t.locale, { day: "numeric", month: "short" })}
-            </span>
-            <div>
-              <span style={{ width: `${entry.percentage}%` }} />
-            </div>
-            <strong>{entry.percentage}%</strong>
+      {lastSeven.map((entry) => (
+        <div className="hist-row" key={entry.date}>
+          <span>
+            {new Date(`${entry.date}T12:00:00`).toLocaleDateString(t.locale, { day: "numeric", month: "short" })}
+          </span>
+          <div>
+            <i style={{ width: `${entry.percentage}%` }} />
           </div>
-        ))}
-      </div>
+          <strong>{entry.percentage}%</strong>
+        </div>
+      ))}
     </div>
   );
 }
@@ -40,9 +39,8 @@ export function RoutinesView({ state, actions }) {
   const tasks = state.routines[kind] || [];
 
   return (
-    <section className="page-section">
-      <SectionHeader title={t("routines.title")} meta={kind === "daily" ? t("routines.daily") : t("routines.weekly")} />
-      <SegmentedControl
+    <div className="view">
+      <Seg
         value={kind}
         onChange={setKind}
         options={[
@@ -50,7 +48,11 @@ export function RoutinesView({ state, actions }) {
           { value: "weekly", label: t("routines.weekly") },
         ]}
       />
-      <LevelFilter value={energy} onChange={actions.setEnergy} />
+      <Seg
+        value={energy}
+        onChange={actions.setEnergy}
+        options={LEVELS.map((level) => ({ value: level.id, label: t(`levels.${level.id}`) }))}
+      />
       <TaskList
         title={kind === "daily" ? t("routines.dailyList") : t("routines.weeklyList")}
         tasks={tasks}
@@ -59,6 +61,6 @@ export function RoutinesView({ state, actions }) {
         titleFor={(task) => t.task(task.id, task.title)}
       />
       <ProgressHistory progress={state.progress.daily} />
-    </section>
+    </div>
   );
 }

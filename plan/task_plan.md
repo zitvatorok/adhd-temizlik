@@ -8,10 +8,11 @@ hazır Piling Up 1.0 (ayrıntı: docs/superpowers/plans/2026-07-12-appstore-ios-
 - [x] Faz A: Kararlar (Capacitor · sıcak editoryal · TR+EN · bildirim v1) — kullanıcı onayladı
 - [x] Faz B: Görsel yön mockup'ı — kullanıcı onayladı (docs/design/mockup.html)
 - [x] Faz C: Spec + uygulama planı yazıldı ve commit'lendi
-- [ ] Task 0: Taban çizgisi (lint/test/build yeşil)
-- [ ] Task 1: Ölü kod silme
-- [ ] Task 2: App.jsx modülerleştirme (görsel değişiklik yok)
-- [ ] Task 3: i18n (TR/EN)
+- [x] Task 0: Taban çizgisi (lint/test/build yeşil)
+- [x] Task 1: Ölü kod silme (70913b8)
+- [x] Task 2: App.jsx modülerleştirme (88a2c0a)
+- [x] Task 3: i18n TR/EN — EN'de UI + tüm görev/oda içerik çevirileri; oda görevleri
+      "roomId:taskId" kapsamlı anahtarla (mutfak/çocuk k-closet-* çakışması)
 - [ ] Task 4: Tasarım sistemi tabanı (tokens/font/kabuk)
 - [ ] Task 5: Ekranlar (5a–5f)
 - [ ] Task 6: Preferences kalıcılık adaptörü

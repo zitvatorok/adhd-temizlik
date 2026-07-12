@@ -1,22 +1,29 @@
-import { getTaskStatus } from "../lib/taskCards.js";
+import { getTaskStatus, inferMinutes } from "../lib/taskCards.js";
+import { Stamp } from "./Stamp.jsx";
 import { useT } from "../i18n/useT.js";
 
-function TaskItem({ task, onToggle, titleFor }) {
+const LEVEL_CLASS = { light: "", medium: "is-mid", deep: "is-high" };
+
+function TaskRow({ task, onToggle, titleFor }) {
   const t = useT();
   const status = getTaskStatus(task);
 
   return (
-    <button
-      type="button"
-      className={`task-item is-${status} ${task.done ? "is-done" : ""}`}
-      onClick={() => onToggle(task.id)}
-      aria-pressed={task.done}
-    >
-      <span className="check-dot" aria-hidden="true">
-        {status === "done" ? "✓" : status === "paused" ? "…" : status === "started" ? "•" : ""}
+    <button type="button" className={`row ${task.done ? "is-done" : ""}`} onClick={() => onToggle(task.id)}>
+      <Stamp status={status} taskId={task.id} />
+      <span className="row-main">
+        <span className="row-t">{titleFor(task)}</span>
+        <span className="row-m" style={{ display: "block" }}>
+          {t("minutes", { n: inferMinutes(task) })}
+          {status === "started" && ` · ${t("status.started")}`}
+          {status === "paused" && ` · ${t("status.paused")}`}
+        </span>
       </span>
-      <span className="task-title">{titleFor(task)}</span>
-      {task.level && <span className={`level-chip level-chip-${task.level}`}>{t(`levels.${task.level}`)}</span>}
+      {task.level && (
+        <span className={`lvl ${LEVEL_CLASS[task.level] || ""}`}>
+          {t(`levels.${task.level}`).toLocaleUpperCase(t.locale)}
+        </span>
+      )}
     </button>
   );
 }
@@ -27,28 +34,24 @@ export function TaskList({ title, tasks, levelFilter, onToggle, titleFor = (task
   const completed = filteredTasks.filter((task) => task.done).length;
 
   return (
-    <div className="task-panel">
-      <div className="task-panel-header">
-        <div>
-          <h2>{title}</h2>
-          <span>
-            {completed}/{filteredTasks.length}
-          </span>
-        </div>
-        <div className="mini-progress" aria-hidden="true">
-          <span style={{ width: `${filteredTasks.length ? (completed / filteredTasks.length) * 100 : 0}%` }} />
-        </div>
+    <div className="panel">
+      <div className="panel-h">
+        <b>{title}</b>
+        <span>
+          {completed}/{filteredTasks.length}
+        </span>
+      </div>
+      <div className="bar" aria-hidden="true">
+        <i style={{ width: `${filteredTasks.length ? (completed / filteredTasks.length) * 100 : 0}%` }} />
       </div>
 
-      <div className="task-list">
-        {filteredTasks.length === 0 ? (
-          <p className="empty-state">{t("empty.level")}</p>
-        ) : (
-          filteredTasks.map((task) => (
-            <TaskItem task={task} onToggle={onToggle} titleFor={titleFor} key={task.id} />
-          ))
-        )}
-      </div>
+      {filteredTasks.length === 0 ? (
+        <p className="empty-state">{t("empty.level")}</p>
+      ) : (
+        filteredTasks.map((task) => (
+          <TaskRow task={task} onToggle={onToggle} titleFor={titleFor} key={task.id} />
+        ))
+      )}
     </div>
   );
 }

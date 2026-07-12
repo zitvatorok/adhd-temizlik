@@ -1,0 +1,106 @@
+/* Piling Up design tokens — "sıcak editoryal: kâğıt, mürekkep, mühür"
+   Kaynak: docs/design/mockup.html (onaylı görsel yön). Yeni renk icat etme. */
+
+:root {
+  color-scheme: light;
+
+  /* Gündüz kâğıdı */
+  --bg: #F3EFE4;
+  --surface: #FCFAF3;
+  --inset: #EAE3D2;
+  --ink: #29261E;
+  --ink-soft: #5C5748;
+  --ink-mute: #8D8678;
+  --line: #DED5C1;
+  --line-2: #CFC4AB;
+  --moss: #2E5D45;
+  --moss-deep: #234A36;
+  --moss-soft: #E2EADF;
+  --clay: #BC5C2B;
+  --clay-soft: #F4E3D4;
+  --on-moss: #F3EFE4;
+  --on-clay: #FBF3EA;
+  --danger: #A8524A;
+
+  --shadow-panel: 0 10px 26px -16px rgba(41, 31, 14, 0.22);
+
+  /* Şekil ve hareket */
+  --r-panel: 20px;
+  --r-field: 14px;
+  --dur-1: 160ms;
+  --dur-2: 220ms;
+  --ease-out: cubic-bezier(0.25, 0.6, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* iOS safe area */
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+
+    /* Gece kâğıdı — saf siyah değil */
+    --bg: #1B1812;
+    --surface: #252017;
+    --inset: #2E2819;
+    --ink: #EDE6D5;
+    --ink-soft: #C6BEAA;
+    --ink-mute: #8F8874;
+    --line: #383223;
+    --line-2: #4A432E;
+    --moss: #8FBC9F;
+    --moss-deep: #A3CCB1;
+    --moss-soft: #2A382D;
+    --clay: #D9834C;
+    --clay-soft: #3A2B1C;
+    --on-moss: #17251C;
+    --on-clay: #2A1A0F;
+    --danger: #D08A7C;
+
+    --shadow-panel: 0 12px 28px -16px rgba(0, 0, 0, 0.5);
+  }
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #F3EFE4;
+  --surface: #FCFAF3;
+  --inset: #EAE3D2;
+  --ink: #29261E;
+  --ink-soft: #5C5748;
+  --ink-mute: #8D8678;
+  --line: #DED5C1;
+  --line-2: #CFC4AB;
+  --moss: #2E5D45;
+  --moss-deep: #234A36;
+  --moss-soft: #E2EADF;
+  --clay: #BC5C2B;
+  --clay-soft: #F4E3D4;
+  --on-moss: #F3EFE4;
+  --on-clay: #FBF3EA;
+  --danger: #A8524A;
+  --shadow-panel: 0 10px 26px -16px rgba(41, 31, 14, 0.22);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #1B1812;
+  --surface: #252017;
+  --inset: #2E2819;
+  --ink: #EDE6D5;
+  --ink-soft: #C6BEAA;
+  --ink-mute: #8F8874;
+  --line: #383223;
+  --line-2: #4A432E;
+  --moss: #8FBC9F;
+  --moss-deep: #A3CCB1;
+  --moss-soft: #2A382D;
+  --clay: #D9834C;
+  --clay-soft: #3A2B1C;
+  --on-moss: #17251C;
+  --on-clay: #2A1A0F;
+  --danger: #D08A7C;
+  --shadow-panel: 0 12px 28px -16px rgba(0, 0, 0, 0.5);
+}

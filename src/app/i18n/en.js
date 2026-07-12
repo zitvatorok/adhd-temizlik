@@ -67,6 +67,11 @@ export const en = {
     "source.kid": "With kids",
 
     "rooms.title": "Rooms",
+    "rooms.eyebrow": "ROOM BY ROOM, ONE SHELF AT A TIME",
+    "routines.eyebrow": "SMALL REPEATS, BIG DIFFERENCE",
+    "focus.eyebrow": "FOCUS · ONE TASK, ONE TIMER",
+    "quick.eyebrow": "DOPAMINE · QUICK TASK",
+    "settings.eyebrow": "PILING UP 1.0",
 
     "routines.title": "Routines",
     "routines.daily": "Daily",
@@ -87,11 +92,11 @@ export const en = {
     "focus.timeOnly": "Timer only",
 
     "quick.title": "Dopamine",
-    "quick.metaDone": "{n} done",
-    "quick.kicker": "A 5-minute task",
+    "quick.roll": "FRESH ROLL",
+    "quick.meta": "≈ 5 minutes · don't think, start",
     "quick.done": "Done it",
     "quick.change": "Swap",
-    "quick.count": "{n} quick tasks",
+    "quick.count": "{n} quick tasks stamped today",
 
     "settings.title": "Settings",
     "settings.meta": "Stored on device",
@@ -105,6 +110,11 @@ export const en = {
     "settings.lang.system": "System language",
     "settings.lang.tr": "Türkçe",
     "settings.lang.en": "English",
+    "settings.theme": "Theme",
+    "settings.theme.system": "System",
+    "settings.theme.light": "Light",
+    "settings.theme.dark": "Dark",
+    "settings.back": "Back",
 
     "empty.level": "No tasks at this level.",
 

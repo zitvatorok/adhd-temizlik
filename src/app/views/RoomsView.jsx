@@ -1,5 +1,6 @@
 import { DEFAULT_ROOMS } from "../../data.js";
-import { LevelFilter, RoomPicker, SectionHeader } from "../components/ui.jsx";
+import { LEVELS } from "../constants.js";
+import { RoomPills, Seg } from "../components/ui.jsx";
 import { TaskList } from "../components/TaskListPanel.jsx";
 import { useT } from "../i18n/useT.js";
 
@@ -8,20 +9,22 @@ export function RoomsView({ state, actions }) {
   const selectedRoomId = state.ui.selectedRoomId;
   const selectedRoom = state.rooms[selectedRoomId] || DEFAULT_ROOMS[selectedRoomId];
   const energy = state.ui.energy || "light";
-  const roomName = t.room(selectedRoom.id, selectedRoom.name);
 
   return (
-    <section className="page-section">
-      <SectionHeader title={t("rooms.title")} meta={`${roomName} · ${t(`levels.${energy}`)}`} />
-      <RoomPicker rooms={state.rooms} selectedRoomId={selectedRoomId} onSelect={actions.setSelectedRoom} />
-      <LevelFilter value={energy} onChange={actions.setEnergy} />
+    <div className="view">
+      <RoomPills rooms={state.rooms} selectedRoomId={selectedRoomId} onSelect={actions.setSelectedRoom} />
+      <Seg
+        value={energy}
+        onChange={actions.setEnergy}
+        options={LEVELS.map((level) => ({ value: level.id, label: t(`levels.${level.id}`) }))}
+      />
       <TaskList
-        title={roomName}
+        title={t.room(selectedRoom.id, selectedRoom.name)}
         tasks={selectedRoom.tasks}
         levelFilter={energy}
         onToggle={(taskId) => actions.toggleRoomTask(selectedRoom.id, taskId)}
         titleFor={(task) => t.task(`${selectedRoom.id}:${task.id}`, task.title)}
       />
-    </section>
+    </div>
   );
 }
